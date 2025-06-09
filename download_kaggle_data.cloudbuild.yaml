@@ -10,22 +10,11 @@ steps:
       - --runtime=python310
       - --trigger-http
       - --region=${_REGION}
-      - --source=src/utils/download_kaggle_data
+      - --source=src/scripts/download_kaggle_data
       - --set-env-vars=PROJECT_ID=${_PROJECT_ID},BUCKET=${_BUCKET}
       - --timeout=540s
       - --memory=1024MB
       - --set-secrets=${_SECRET_NAME}=projects/${_PROJECT_ID}/secrets/${_SECRET_NAME}:latest
-
-  # Step 2: Fetch project number and bind IAM role to the deployed function
-  - name: 'gcr.io/google.com/cloud-sdk/gcloud'
-    args:
-      - gcloud 
-      - functions 
-      - add-iam-policy-binding 
-      - download_kaggle_data 
-      - --region=${_REGION}
-      - --member="principalSet://cloudresourcemanager.googleapis.com/projects/${_PROJECT_NUM}"
-      - --role="roles/cloudfunctions.invoker"
 
 options:
   logging: CLOUD_LOGGING_ONLY
