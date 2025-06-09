@@ -5,19 +5,20 @@ steps:
       - gcloud 
       - functions 
       - deploy 
-      - ${_FUNCTION_NAME}
+      - download_kaggle_data
       - --runtime python310
       - --trigger-http
       - --allow-unauthenticated
       - --region=${_REGION}
-      - --source=${_SOURCE}
+      - --source=src/utils/download_kaggle_data
       - --set-env-vars=PROJECT_ID=${_PROJECT_ID},BUCKET=${_BUCKET}
       - --timeout=540s
       - --memory=1024MB
 
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 substitutions:
-  _SOURCE : src/utils/download_kaggle_data
-  _FUNCTION_NAME: download_kaggle_data
   _PROJECT_ID: gp-461213
   _REGION: us-central1
   _BUCKET: air-pollution-data-my
