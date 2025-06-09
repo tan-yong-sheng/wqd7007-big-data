@@ -1,0 +1,21 @@
+steps:
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        echo "Deploying Cloud Function..."
+        gcloud functions deploy download_and_upload \
+          --runtime python310 \
+          --trigger-http \
+          --allow-unauthenticated \
+          --region=${_REGION} \
+          --source=src/utils/download_and_upload \
+          --set-env-vars=PROJECT_ID=${_PROJECT_ID},BUCKET=${_BUCKET} \
+          --timeout=540s \
+          --memory=1024MB
+
+substitutions:
+  _PROJECT_ID: your-project-id
+  _REGION: us-central1
+  _BUCKET: your-bucket-name
