@@ -1,6 +1,6 @@
 steps:
   # install dependencies
-  - name: python
+  - name: python:3.10
     entrypoint: pip
     args: ["install", "-r", "src/scripts/utils/requirements.txt", "--user"]
 
@@ -16,7 +16,7 @@ steps:
   #  id: 'update-composer-env'
     
   # run
-  - name: python
+  - name: python:3.10
     entrypoint: python
     args: ["src/scripts/utils/add_src_to_composer.py", "--src_directory=${_SRC_DIRECTORY}", "--src_bucket=${_SRC_BUCKET}"]
 
