@@ -23,6 +23,11 @@ variable "dataproc_cluster_name" {
   type        = string
 }
 
+variable "dags_bucket" {
+  description = "The name of the staging bucket."
+  type        = string
+}
+
 variable "bucket" {
   description = "The name of the primary bucket."
   type        = string
