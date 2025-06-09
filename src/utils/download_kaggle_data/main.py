@@ -29,8 +29,9 @@ def download_kaggle_data(request):
 
         # Define new header names
         new_headers = [
-            "country", "city", "aqi_value", "aqi_category", "co_aqi_value", "co_aqi_category",
-            "ozone_aqi_value", "ozone_aqi_category", "no2_aqi_value", "no2_aqi_category", "pm2-5_aqi_value", "pm2-5_aqi_category"
+            "country", "city", "aqi_value", "aqi_category", "co_aqi_value", 
+            "co_aqi_category", "ozone_aqi_value", "ozone_aqi_category", 
+            "no2_aqi_value", "no2_aqi_category", "pm25_aqi_value", "pm25_aqi_category"
         ]
 
         # Get Kaggle credentials

@@ -10,7 +10,7 @@ steps:
       - --runtime=python310
       - --trigger-http
       - --region=${_REGION}
-      - --source=src/utils/download_kaggle_data
+      - --source=../src/utils/download_kaggle_data
       - --set-env-vars=PROJECT_ID=${_PROJECT_ID},BUCKET=${_BUCKET}
       - --timeout=540s
       - --memory=1024MB
