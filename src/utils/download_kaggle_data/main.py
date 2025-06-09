@@ -1,5 +1,4 @@
 import os
-import zipfile
 import pandas as pd
 from google.cloud import secretmanager
 from google.cloud import storage

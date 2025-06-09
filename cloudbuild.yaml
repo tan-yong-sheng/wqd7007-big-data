@@ -1,26 +1,33 @@
 steps:
+  # Deploy cloud function (not public)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: bash
     args:
-      - gcloud 
-      - functions 
-      - deploy 
-      - download_kaggle_data
-      - --gen2
-      - --runtime=python310
-      - --trigger-http
-      - --allow-unauthenticated
-      - --region=${_REGION}
-      - --source=src/utils/download_kaggle_data
-      - --set-env-vars=PROJECT_ID=${_PROJECT_ID},BUCKET=${_BUCKET}
-      - --timeout=540s
-      - --memory=1024MB
-      # you need to deploy the `kaggle-json` secrets first by running `gcloud secrets create kaggle-json --data-file=kaggle.json`
-      - --set-secrets=${_SECRET_NAME}=projects/${_PROJECT_ID}/secrets/${_SECRET_NAME}:latest
+      - -c
+      - |
+        # Deploy the Cloud Function without public access
+        gcloud functions deploy download_kaggle_data \
+          --runtime=python310 \
+          --trigger-http \
+          --region=${_REGION} \
+          --source=src/utils/download_kaggle_data \
+          --set-env-vars=PROJECT_ID=${_PROJECT_ID},BUCKET=${_BUCKET} \
+          --timeout=540s \
+          --memory=1024MB \
+          --no-allow-unauthenticated
 
+        # Fetch project number
+        PROJECT_NUM=$(gcloud projects describe ${_PROJECT_ID} --format="value(projectNumber)")
+
+        # Grant invoker access to all identities in the same project
+        gcloud functions add-iam-policy-binding download_kaggle_data \
+          --region=${_REGION} \
+          --member="principalSet://cloudresourcemanager.googleapis.com/projects/${PROJECT_NUM}" \
+          --role="roles/cloudfunctions.invoker"
 
 options:
   logging: CLOUD_LOGGING_ONLY
+
 
 substitutions:
   _PROJECT_ID: gp-461213
