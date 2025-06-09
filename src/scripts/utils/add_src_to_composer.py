@@ -9,14 +9,14 @@ from typing import List, Tuple
 from google.cloud import storage
 
 
-def _create_dags_list(dags_directory: str) -> Tuple[str, List[str]]:
+def _create_src_list(src_directory: str) -> Tuple[str, List[str]]:
     temp_dir = tempfile.mkdtemp()
 
     # ignore non-DAG Python files
     files_to_ignore = ignore_patterns("__init__.py", "*_test.py")
 
     # Copy everything but the ignored files to a temp directory
-    copytree(dags_directory, f"{temp_dir}/", ignore=files_to_ignore, dirs_exist_ok=True)
+    copytree(src_directory, f"{temp_dir}/", ignore=files_to_ignore, dirs_exist_ok=True)
 
     # The only Python files left in our temp directory are DAG files
     # so we can exclude all non Python files
@@ -24,19 +24,19 @@ def _create_dags_list(dags_directory: str) -> Tuple[str, List[str]]:
     return (temp_dir, dags)
 
 
-def upload_dags_to_composer(
-    dags_directory: str, bucket_name: str, name_replacement: str = "dags/"
+def upload_src_to_composer(
+    src_directory: str, bucket_name: str, name_replacement: str = "dags/"
 ) -> None:
     """
     Given a directory, this function moves all DAG files from that directory
     to a temporary directory, then uploads all contents of the temporary directory
     to a given cloud storage bucket
     Args:
-        dags_directory (str): a fully qualified path to a directory that contains a "dags/" subdirectory
+        src_directory (str): a fully qualified path to a directory that contains a "src/" subdirectory containing 'dags' folder inside
         bucket_name (str): the GCS bucket of the Cloud Composer environment to upload DAGs to
         name_replacement (str, optional): the name of the "dags/" subdirectory that will be used when constructing the temporary directory path name Defaults to "dags/".
     """
-    temp_dir, dags = _create_dags_list(dags_directory)
+    temp_dir, dags = _create_src_list(src_directory)
 
     if len(dags) > 0:
         # Note - the GCS client library does not currently support batch requests on uploads
@@ -71,14 +71,14 @@ if __name__ == "__main__":
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument(
-        "--dags_directory",
+        "--src_directory",
         help="Relative path to the source directory containing your DAGs",
     )
     parser.add_argument(
-        "--dags_bucket",
+        "--src_bucket",
         help="Name of the DAGs bucket of your Composer environment without the gs:// prefix",
     )
 
     args = parser.parse_args()
 
-    upload_dags_to_composer(args.dags_directory, args.dags_bucket)
+    _ = upload_src_to_composer(args.src_directory, args.src_bucket)

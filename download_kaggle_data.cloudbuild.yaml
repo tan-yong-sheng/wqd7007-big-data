@@ -19,7 +19,6 @@ steps:
 options:
   logging: CLOUD_LOGGING_ONLY
 
-
 substitutions:
   _PROJECT_ID: gp-461213
   _PROJECT_NUM: '1000028997311'
