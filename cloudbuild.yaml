@@ -6,7 +6,7 @@ steps:
       - functions 
       - deploy 
       - download_kaggle_data
-      - --runtime python310
+      - --runtime=python310
       - --trigger-http
       - --allow-unauthenticated
       - --region=${_REGION}
