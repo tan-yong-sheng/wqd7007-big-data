@@ -6,6 +6,7 @@ steps:
       - functions 
       - deploy 
       - download_kaggle_data
+      - --gen2
       - --runtime=python310
       - --trigger-http
       - --allow-unauthenticated
@@ -14,6 +15,9 @@ steps:
       - --set-env-vars=PROJECT_ID=${_PROJECT_ID},BUCKET=${_BUCKET}
       - --timeout=540s
       - --memory=1024MB
+      # you need to deploy the `kaggle-json` secrets first by running `gcloud secrets create kaggle-json --data-file=kaggle.json`
+      - --set-secrets=${_SECRET_NAME}=projects/${_PROJECT_ID}/secrets/${_SECRET_NAME}:latest
+
 
 options:
   logging: CLOUD_LOGGING_ONLY
@@ -22,3 +26,4 @@ substitutions:
   _PROJECT_ID: gp-461213
   _REGION: us-central1
   _BUCKET: air-pollution-data-my
+  _SECRET_NAME: kaggle-json
