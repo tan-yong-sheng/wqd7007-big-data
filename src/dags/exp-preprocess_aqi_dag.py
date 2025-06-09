@@ -50,6 +50,7 @@ default_args = {
 # DAG definition
 with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as dag:
 
+    ### ----------------------------------------------------------- ###
     # Part 1 - Run cloud function
     download_data = CloudFunctionInvokeFunctionOperator(
         task_id="download-kaggle-data",
@@ -58,11 +59,11 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
             "bucket-name": BUCKET_NAME,
         })
     )
-
+   
     ## download data via invoking cloud function
     download_data
-    
 
+    ### ----------------------------------------------------------- ###
     # Part 2 - Running workloads with Dataproc serverless    
     create_batch = DataprocCreateBatchOperator(
         task_id="batch_create",
@@ -81,28 +82,23 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
         },
         batch_id="batch-create-dataproc",
     )
-    # [START composer_dataproc_list_batch]
     list_batches = DataprocListBatchesOperator(
         task_id="list-all-batches",
     )
-    # [END composer_dataproc_list_batch]
-
-    # [START composer_dataproc_get_batch]
     get_batch = DataprocGetBatchOperator(
         task_id="get_batch",
         batch_id="batch-create-dataproc",
     )
-    # [END composer_dataproc_get_batch]
-    # [START composer_dataproc_delete_batch]
     delete_batch = DataprocDeleteBatchOperator(
         task_id="delete_batch",
         batch_id="batch-create-dataproc",
     )
-    # [END composer_dataproc_delete_batch]
+
     create_batch >> list_batches >> get_batch >> delete_batch
-    # [END composer_dataproc_create_batch]
 
-
+    ### ----------------------------------------------------------- ###
+    # please add 'create bigquery table if not exists'
+   
     # Task to write data to BigQuery
     #t3 = BigQueryInsertJobOperator(
     #    task_id="upsert_co2_emissions_to_bigquery",
@@ -151,4 +147,3 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
     #    location="US",
     #    gcp_conn_id="google_cloud_default",  # Ensure this connection exists in Airflow
     #)
-

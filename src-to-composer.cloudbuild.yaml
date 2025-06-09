@@ -1,14 +1,14 @@
 steps:
+  # sync to local src/ folder to google cloud storage
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: bash
     args:
       - "-c"
       - |
-        gsutil -m rsync -d -r ${_SRC_DIRECTORY}/ gs://${_SRC_BUCKET}/${_SRC_DIRECTORY}/
+        gsutil -m rsync -d -r src gs://${_SRC_BUCKET}/src
 
 options:
   logging: CLOUD_LOGGING_ONLY
 
 substitutions:
   _SRC_BUCKET: us-central1-airflow-bucket
-  _SRC_DIRECTORY: src

@@ -38,6 +38,10 @@ resource "google_storage_bucket" "dags_bucket" {
   location     = var.region
   force_destroy = true
   uniform_bucket_level_access = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # --- Cloud Composer Environment ---
