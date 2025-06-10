@@ -3,9 +3,8 @@ import json
 
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.providers.http.operators.http import SimpleHttpOperator
+from airflow.providers.http.operators.http import HttpOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobOperator
-
 
 # Project Configuration
 PROJECT_ID = os.environ.get('MY_PROJECT_ID')
@@ -55,8 +54,8 @@ default_args = {
 # DAG definition
 with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as dag:
 
-    # Run cloud function with SimpleHttpOperator
-    download_data = SimpleHttpOperator(
+    # Run cloud function with HttpOperator
+    download_data = HttpOperator(
         task_id='download-kaggle-data',
         method='POST',
         http_conn_id='http_default',
