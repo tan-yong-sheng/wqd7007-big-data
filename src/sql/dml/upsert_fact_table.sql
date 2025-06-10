@@ -20,7 +20,6 @@ INSERT (country, city, aqi_value, aqi_category,
       co_aqi_value, co_aqi_category, ozone_aqi_value, 
       ozone_aqi_category, no2_aqi_value, no2_aqi_category, 
       pm25_aqi_value, pm25_aqi_category, dominant_pollutant)
-
 VALUES (source.country, source.city, source.aqi_value,
       source.aqi_category, source.co_aqi_value, 
       source.co_aqi_category, source.ozone_aqi_value, 
