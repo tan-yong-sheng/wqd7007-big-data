@@ -58,9 +58,9 @@ with DAG("SparkETL-exp", schedule_interval="@weekly", default_args=default_args)
         http_conn_id='http_default',
         endpoint=FUNCTION_NAME,
         headers={"Content-Type": "application/json"},
-        data=json.dumps({
+        data={
             "bucket-name": BUCKET_NAME,  # passing the bucket name directly
-        }),
+        },
     )
    
     ## download data via invoking cloud function
