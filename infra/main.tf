@@ -12,7 +12,34 @@ provider "google" {
   region  = var.region
 }
 
-# --- Cloud Storage Bucket for DAGs ---
+# --- Cloud Composer Environment ---
+# resource "google_composer_environment" "composer_env" {
+#  project  = var.project_id
+#  name     = var.composer_env_name
+#  region   = var.region
+
+#  depends_on = [google_project_service.composer_api]
+
+#  config {
+#    software_config {
+#      image_version = "composer-3-airflow-2.9.3"
+#      env_variables = {
+#        MY_PROJECT_ID  = var.project_id
+#        REGION         = var.region
+#        ZONE           = var.zone
+#        DATAPROC_CLUSTER_NAME = var.dataproc_cluster_name
+#        BUCKET         = var.bucket
+#        STAGING_BUCKET = var.staging_bucket
+#        DAGS_BUCKET    = google_storage_bucket.dags_bucket.name
+#      }
+#    }
+#    environment_size = "ENVIRONMENT_SIZE_SMALL"
+#    #storage_config {
+#    #  bucket = google_storage_bucket.dags_bucket.name
+#    #}
+#  }
+
+# --- Cloud Storage Bucket ---
 resource "google_storage_bucket" "dags_bucket" {
   project      = var.project_id
   name         = "${var.region}-airflow-bucket"
@@ -48,31 +75,3 @@ resource "google_storage_bucket" "staging_bucket" {
     prevent_destroy = true
   }
 }
-
-
-# --- Cloud Composer Environment ---
-# resource "google_composer_environment" "composer_env" {
-#  project  = var.project_id
-#  name     = var.composer_env_name
-#  region   = var.region
-
-#  depends_on = [google_project_service.composer_api]
-
-#  config {
-#    software_config {
-#      image_version = "composer-3-airflow-2.9.3"
-#      env_variables = {
-#        MY_PROJECT_ID  = var.project_id
-#        REGION         = var.region
-#        ZONE           = var.zone
-#        DATAPROC_CLUSTER_NAME = var.dataproc_cluster_name
-#        BUCKET         = var.bucket
-#        STAGING_BUCKET = var.staging_bucket
-#        DAGS_BUCKET    = google_storage_bucket.dags_bucket.name
-#      }
-#    }
-#    environment_size = "ENVIRONMENT_SIZE_SMALL"
-#    #storage_config {
-#    #  bucket = google_storage_bucket.dags_bucket.name
-#    #}
-#  }
