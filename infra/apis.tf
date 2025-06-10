@@ -27,11 +27,6 @@ resource "google_project_service" "cloud_functions_api" {
   disable_on_destroy = false # Set to true to disable API on 'terraform destroy'
 }
 
-resource "google_project_service" "cloudbuild_api" {
-  project = var.project_id
-  service = "cloudbuild.googleapis.com"
-  disable_on_destroy = false
-}
 
 # might need these common APIs for various GCP operations
 resource "google_project_service" "cloudresourcemanager_api" {

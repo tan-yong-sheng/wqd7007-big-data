@@ -17,6 +17,8 @@ steps:
       - --set-secrets=${_SECRET_NAME}=projects/${_PROJECT_ID}/secrets/${_SECRET_NAME}:latest
       - --allow-unauthenticated
       - --ingress-settings=all
+      - --service-account=${_PROJECT_NUM}@cloudbuild.gserviceaccount.com
+
 
 options:
   logging: CLOUD_LOGGING_ONLY

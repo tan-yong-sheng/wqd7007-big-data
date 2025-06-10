@@ -12,6 +12,11 @@ provider "google" {
   region  = var.region
 }
 
+# Dynamically fetch the project number
+data "google_project" "current_project" {
+  project_id = var.project_id
+  depends_on = [google_project_service.cloud_build_api] # Ensure API is enabled before trying to get project details
+}
 
 # --- Create Google cloud storage bucket to save data ----
 resource "google_storage_bucket" "bucket" {
@@ -38,10 +43,20 @@ resource "google_storage_bucket" "staging_bucket" {
   }
 }
 
-# --- Grant the Cloud Run Admin role to the Cloud Build service account ---
-# This service account is automatically created by Google Cloud for Cloud Build.
+# -- Setup for Cloud Build
+# 1. Activate cloud build API
+resource "google_project_service" "cloud_build_api" {
+  project = var.project_id
+  service = "cloudbuild.googleapis.com"
+  disable_on_destroy = false
+}
+
+# 2. Grant the Cloud Run Admin role to the Cloud Build service account
+#    This service account is automatically created and managed by Google Cloud
+#    when cloudbuild.googleapis.com is enabled. You don't create it with google_service_account.
 resource "google_project_iam_member" "cloud_build_run_admin" {
-  project = var.project_id # Assuming var.project_id is your project ID (e.g., gp-461213)
+  project = var.project_id
   role    = "roles/run.admin"
-  member  = "serviceAccount:${var.project_number}@cloudbuild.gserviceaccount.com"
+  member  = "serviceAccount:${data.google_project.current_project.number}@cloudbuild.gserviceaccount.com"
+  depends_on = [google_project_service.cloud_build_api] # Ensure API is enabled before granting role
 }
