@@ -7,4 +7,4 @@ infra/.terraform/
 infra/.terraform.lock.hcl
 infra/.terraform.tfstate
 infra/.terraform.tfstate.lock.hcl
-infra/.terraform/tfstate.lock.info
+infra/.terraform.tfstate.lock.info
