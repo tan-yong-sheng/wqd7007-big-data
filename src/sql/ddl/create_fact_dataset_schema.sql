@@ -1,0 +1,4 @@
+CREATE SCHEMA IF NOT EXISTS fact
+OPTIONS (
+  location = "US"
+);

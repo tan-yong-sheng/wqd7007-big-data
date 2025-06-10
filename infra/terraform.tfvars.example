@@ -6,5 +6,6 @@ zone       = "us-central1-f"
 # --- Composer and Related Services Configuration ---
 composer_env_name = "airflow"
 dataproc_cluster_name  = "air-quality-cluster"
-bucket            = "air-pollution-data-my"
-staging_bucket    = "staging-air-pollution-data-my"
+bucket           = "air-pollution-data-my"
+staging_bucket   = "staging-air-pollution-data-my"
+dags_bucket       = "us-central1-airflow-bucket"
