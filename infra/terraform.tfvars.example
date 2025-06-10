@@ -1,8 +1,8 @@
 # --- GCP Project and Location ---
 project_id = "gp-461213"
-project_number = "1000028997311"
 region     = "us-central1"
 zone       = "us-central1-f"
+location   = "US"
 
 # --- Composer and Related Services Configuration ---
 composer_env_name = "airflow"

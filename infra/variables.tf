@@ -8,6 +8,11 @@ variable "region" {
   type        = string
 }
 
+variable "location" {
+  description = "The GCP's location for the resources, either 'US' or 'EU'"
+  type        = string
+}
+
 variable "zone" {
   description = "The GCP zone for the Dataproc PHS cluster."
   type        = string
