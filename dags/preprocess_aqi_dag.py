@@ -34,7 +34,7 @@ DATASET_FILE = f"gs://{BUCKET_NAME}/dataset/co2_emissions_canada.csv"
 ## Variables for Cloud Function trigger to download data from Kaggle
 FUNCTION_NAME = "download_kaggle_data"
 TARGET_FUNCTION_URL = f"https://{REGION}-{PROJECT_ID}.cloudfunctions.net/{FUNCTION_NAME}"
-
+AUDIENCE_URL = TARGET_FUNCTION_URL # For Cloud Functions, the audience is typically the function's URL itself.
 
 # Setup configuration for pyspark job in Dataproc
 PYSPARK_JOB = {
@@ -73,8 +73,9 @@ def call_cloud_function_with_token(function_url, audience):
         _LOGGER.info(f"Successfully fetched ID token for audience: {audience}")
 
         # Make the authenticated request
-        headers = {"Authorization": f"Bearer {token}"}
-        response = requests.post(function_url, headers=headers, json={"message": "Data from Airflow"})
+        headers = {"Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json"}
+        response = requests.post(function_url, headers=headers)
         response.raise_for_status() # Raise an HTTPError for bad responses (4xx or 5xx)
 
         _LOGGER.info(f"Cloud Function response: {response.json()}")
@@ -96,7 +97,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
         python_callable=call_cloud_function_with_token,
         op_kwargs={
             'function_url': TARGET_FUNCTION_URL,
-            'audience': TARGET_FUNCTION_URL
+            'audience': AUDIENCE_URL
         },
     )
 
