@@ -17,7 +17,10 @@ Using composer to automate dataproc cluster creation
 
 - Terraform with cloud build: https://blog.devops.dev/terraform-using-google-cloud-build-a-very-basic-example-723f5fb58bca
 
+- Terraform for BigQuery https://github.com/sudovazid/gcp_terraform/tree/main
 
 ```
 gcloud secrets create kaggle-json --data-file=kaggle.json
 ```
+
+- Need to setup `GOOGLE_CREDENTIALS_JSON` at GITHUB secrets for github workflows

@@ -1,30 +1,32 @@
 # --- Setup settings for Cloud Composer Environment ---
 
-# 1. Create a dedicated Service Account for the Composer environment
-resource "google_service_account" "composer_service_account" {
-  project      = var.project_id
-  account_id   = "composer-sa-${var.composer_env_name}" # Unique ID for the SA
-  display_name = "Service account for Composer environment ${var.composer_env_name}"
-}
-
-# 2. Grant necessary IAM roles to the Service Account
+# 1. Grant necessary IAM roles to the Service Account
 resource "google_project_iam_member" "composer_worker_role" {
   project = var.project_id
   role    = "roles/composer.worker"
-  member  = "serviceAccount:${google_service_account.composer_service_account.email}"
+  member  = "serviceAccount:${data.google_project.current_project.number}-compute@developer.gserviceaccount.com"
+  depends_on = [
+    data.google_project.current_project
+  ]
 }
 
 resource "google_project_iam_member" "storage_object_admin_role" {
   project = var.project_id
   role    = "roles/storage.objectAdmin" # Or more specific like objectViewer if appropriate
-  member  = "serviceAccount:${google_service_account.composer_service_account.email}"
+  member  = "serviceAccount:${data.google_project.current_project.number}-compute@developer.gserviceaccount.com"
+  depends_on = [
+    data.google_project.current_project
+  ]
 }
 
 # Grant the SA permissions on the DAGs bucket (critical for Composer)
 resource "google_storage_bucket_iam_member" "dags_bucket_iam" {
   bucket = google_storage_bucket.dags_bucket.name
   role   = "roles/storage.objectAdmin" # Composer needs to read/write DAGs, logs, plugins
-  member = "serviceAccount:${google_service_account.composer_service_account.email}"
+  member  = "serviceAccount:${data.google_project.current_project.number}-compute@developer.gserviceaccount.com"
+  depends_on = [
+    data.google_project.current_project
+  ]
 }
 
 # --- DAGS bucket ---
@@ -73,7 +75,7 @@ resource "google_composer_environment" "composer_env" {
     environment_size = "ENVIRONMENT_SIZE_SMALL"
 
     node_config {
-      service_account = google_service_account.composer_service_account.email
+      service_account = "${data.google_project.current_project.number}-compute@developer.gserviceaccount.com"
     }
   }
 }
