@@ -17,14 +17,14 @@ TEMP_BUCKET_NAME = os.environ.get('STAGING_BUCKET')
 DAGS_BUCKET_NAME = os.environ.get('DAGS_BUCKET')
 
 ## Variables for Dataproc jobs
-PHS_CLUSTER_NAME = os.environ.get('PHS_CLUSTER_NAME')
+DATAPROC_CLUSTER_NAME = os.environ.get('DATAPROC_CLUSTER_NAME')
 
 ## Variables for BigQuery jobs
-BIGQUERY_TABLE = f"{PROJECT_ID}.staging.co2_emissions"
+STAGING_BIGQUERY_TABLE = f"{PROJECT_ID}.staging.air_pollution_data"
 
 ## Variables for Python file & Dataset
-PYTHON_SCRIPT_FILE = f"gs://{DAGS_BUCKET_NAME}/scripts/dataproc_gcs_to_gbq_job.py"
-DATASET_FILE = f"gs://{BUCKET_NAME}/dataset/co2_emissions_canada.csv"
+PYTHON_SCRIPT_FILE = f"gs://{DAGS_BUCKET_NAME}/src/scripts/preprocess_aqi_data/main.py"
+DATASET_FILE = f"gs://{BUCKET_NAME}/dataset/"
 
 ## Variables for Cloud Function trigger to download data from Kaggle
 FUNCTION_NAME = "download_kaggle_data"
@@ -32,12 +32,12 @@ FUNCTION_NAME = "download_kaggle_data"
 # Setup configuration for pyspark job in Dataproc
 PYSPARK_JOB = {
     "reference": {"project_id": PROJECT_ID},
-    "placement": {"cluster_name": PHS_CLUSTER_NAME},
+    "placement": {"cluster_name": DATAPROC_CLUSTER_NAME},
     "pyspark_job": {
         "main_python_file_uri": PYTHON_SCRIPT_FILE,
         "args": [
             f"--gcs_path={DATASET_FILE}",
-            f"--bigquery_table={BIGQUERY_TABLE}",
+            f"--bigquery_table={STAGING_BIGQUERY_TABLE}",
             f"--bucket_name={TEMP_BUCKET_NAME}",
         ],
     },
