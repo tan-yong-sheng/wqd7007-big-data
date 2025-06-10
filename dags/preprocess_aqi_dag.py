@@ -6,9 +6,6 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobOperator
 
-from google.auth.transport.requests import Request
-from google.oauth2 import id_token
-
 # Project Configuration
 PROJECT_ID = os.environ.get('MY_PROJECT_ID')
 GOOGLE_CONN_ID = os.environ.get('GOOGLE_CONN_ID')

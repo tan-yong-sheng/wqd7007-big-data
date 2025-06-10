@@ -16,7 +16,7 @@ steps:
       - --memory=1024MB
       - --set-secrets=${_SECRET_NAME}=projects/${_PROJECT_ID}/secrets/${_SECRET_NAME}:latest
       - --allow-unauthenticated
-      - --ingress-settings=internal-only
+      - --ingress-settings=all
 
 options:
   logging: CLOUD_LOGGING_ONLY
