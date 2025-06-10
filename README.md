@@ -24,3 +24,13 @@ gcloud secrets create kaggle-json --data-file=kaggle.json
 ```
 
 - Need to setup `GOOGLE_CREDENTIALS_JSON` at GITHUB secrets for github workflows
+
+
+```
+export PROJECT_ID=gp-461213
+export REGION=us-central1
+export BUCKET=air-pollution-data-my
+export STAGING_BUCKET=dataproc-temp-us-central1-1000028997311-ze5fqj5o
+export DATAPROC_CLUSTER_NAME=air-qualiterty-cluster
+export SERVICE_ACCOUNT_EMAIL=1000028997311-compute@developer.gserviceaccount.com
+```

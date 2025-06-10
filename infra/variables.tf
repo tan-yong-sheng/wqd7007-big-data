@@ -42,3 +42,4 @@ variable "staging_bucket" {
   description = "The name of the staging bucket."
   type        = string
 }
+

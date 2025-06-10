@@ -1,12 +1,12 @@
 # --- GCP Project and Location ---
 project_id = "gp-461213"
 region     = "us-central1"
-zone       = "us-central1-f"
+zone       = "us-central1-a"
 location   = "US"
 
 # --- Composer and Related Services Configuration ---
 composer_env_name = "airflow"
 dataproc_cluster_name  = "air-quality-cluster"
 bucket           = "air-pollution-data-my"
-staging_bucket   = "staging-air-pollution-data-my"
+staging_bucket   = "dataproc-staging-us-central1-1000028997311-yrhvb3wy"
 dags_bucket       = "us-central1-airflow-bucket"
