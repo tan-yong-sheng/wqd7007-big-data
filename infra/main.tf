@@ -12,6 +12,8 @@ provider "google" {
   region  = var.region
 }
 
+
+# --- Create Google cloud storage bucket to save data ----
 resource "google_storage_bucket" "bucket" {
   project      = var.project_id
   name         = var.bucket
@@ -34,4 +36,12 @@ resource "google_storage_bucket" "staging_bucket" {
   lifecycle {
     prevent_destroy = true
   }
+}
+
+# --- Grant the Cloud Run Admin role to the Cloud Build service account ---
+# This service account is automatically created by Google Cloud for Cloud Build.
+resource "google_project_iam_member" "cloud_build_run_admin" {
+  project = var.project_id # Assuming var.project_id is your project ID (e.g., gp-461213)
+  role    = "roles/run.admin"
+  member  = "serviceAccount:${var.project_number}@cloudbuild.gserviceaccount.com"
 }

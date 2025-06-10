@@ -27,7 +27,7 @@ resource "google_storage_bucket_iam_member" "dags_bucket_iam" {
   member = "serviceAccount:${google_service_account.composer_service_account.email}"
 }
 
-# DAGS bucket
+# --- DAGS bucket ---
 resource "google_storage_bucket" "dags_bucket" {
   name          = var.dags_bucket
   project       = var.project_id
