@@ -51,12 +51,12 @@ resource "google_project_service" "cloud_build_api" {
   disable_on_destroy = false
 }
 
-# 2. Grant the Cloud Run Admin role to the Cloud Build service account
+# 3. Grant the Cloud Run Admin role to the Cloud Build service account
 #    This service account is automatically created and managed by Google Cloud
 #    when cloudbuild.googleapis.com is enabled. You don't create it with google_service_account.
 resource "google_project_iam_member" "cloud_build_run_admin" {
   project = var.project_id
   role    = "roles/run.admin"
-  member  = "serviceAccount:${data.google_project.current_project.number}@cloudbuild.gserviceaccount.com"
+  member  = "serviceAccount:${data.google_project.current_project.number}-compute@developer.gserviceaccount.com"
   depends_on = [google_project_service.cloud_build_api] # Ensure API is enabled before granting role
 }
