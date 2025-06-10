@@ -55,9 +55,11 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
     download_data = CloudFunctionInvokeFunctionOperator(
         task_id="download-kaggle-data",
         function_id="download-kaggle-data",
+        location=REGION,
         input_data=json.dumps({
             "bucket-name": BUCKET_NAME,
-        })
+        }),
+        gcp_conn_id="google_cloud_default"
     )
    
     ## download data via invoking cloud function

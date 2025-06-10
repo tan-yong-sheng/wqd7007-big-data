@@ -55,9 +55,10 @@ default_args = {
 # DAG definition
 with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as dag:
 
-    t1 = CloudFunctionInvokeFunctionOperator(
+    download_data = CloudFunctionInvokeFunctionOperator(
         task_id="download-kaggle-data",
         function_id="download-kaggle-data",
+        location=REGION,
         input_data=json.dumps({
             "bucket-name": BUCKET_NAME,
         }),
@@ -123,4 +124,4 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
     #)
 
     # Define task dependencies
-    t1 >> t2 # >> t3
+    download_data >> t2 # >> t3
