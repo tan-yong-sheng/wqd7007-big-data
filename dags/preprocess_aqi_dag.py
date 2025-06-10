@@ -1,6 +1,5 @@
 import os
 import requests
-import logging
 
 from datetime import datetime, timedelta
 from airflow import DAG
@@ -58,12 +57,8 @@ default_args = {
 
 def invoke_cloud_function_with_auth(region: str, project_id: str, function_name: str):
     FUNCTION_URL = f"https://{region}-{project_id}.cloudfunctions.net/{function_name}"
-    AUDIENCE_URL = FUNCTION_URL # The audience for the ID token should match the function's URL
-
-    # ... (function_url and audience construction) ...
-    auth_req = Request()
-    token = id_token.fetch_id_token(auth_req, AUDIENCE_URL) # <-- This is the magic
-    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    # calling cloud function
+    headers = {"Content-Type": "application/json"}
     response = requests.post(FUNCTION_URL, headers=headers)
     response.raise_for_status()
     return response.json()
