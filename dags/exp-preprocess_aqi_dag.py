@@ -37,7 +37,7 @@ DATAPROC_CLUSTER_PATH = f"projects/{PROJECT_ID}/regions/{REGION}/clusters/{DATAP
 SPARK_BIGQUERY_JAR_FILE = "gs://spark-lib/bigquery/spark-bigquery-latest_2.12.jar"
 
 ## Variables for Cloud Function trigger to download data from Kaggle
-FUNCTION_NAME = "download_and_upload"
+FUNCTION_NAME = "download_kaggle_data"
 
 # Default arguments for the DAG
 default_args = {

@@ -27,7 +27,7 @@ PYTHON_SCRIPT_FILE = f"gs://{DAGS_BUCKET_NAME}/scripts/dataproc_gcs_to_gbq_job.p
 DATASET_FILE = f"gs://{BUCKET_NAME}/dataset/co2_emissions_canada.csv"
 
 ## Variables for Cloud Function trigger to download data from Kaggle
-FUNCTION_NAME = "download-kaggle-data"
+FUNCTION_NAME = "download_kaggle_data"
 
 # Setup configuration for pyspark job in Dataproc
 PYSPARK_JOB = {
