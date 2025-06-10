@@ -1,10 +1,15 @@
 import os
-import json
+import requests
+import logging
 
 from datetime import datetime, timedelta
 from airflow import DAG
+from airflow.operators.python import PythonOperator
 from airflow.providers.http.operators.http import HttpOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobOperator
+
+from google.auth.transport.requests import Request
+from google.oauth2 import id_token
 
 # Project Configuration
 PROJECT_ID = os.environ.get('MY_PROJECT_ID')
@@ -28,6 +33,8 @@ DATASET_FILE = f"gs://{BUCKET_NAME}/dataset/co2_emissions_canada.csv"
 
 ## Variables for Cloud Function trigger to download data from Kaggle
 FUNCTION_NAME = "download_kaggle_data"
+TARGET_FUNCTION_URL = f"https://{REGION}-{PROJECT_ID}.cloudfunctions.net/{FUNCTION_NAME}"
+
 
 # Setup configuration for pyspark job in Dataproc
 PYSPARK_JOB = {
@@ -51,10 +58,48 @@ default_args = {
     'retry_delay': timedelta(seconds=50),
 }
 
+
+_LOGGER = logging.getLogger(__name__)
+
+def call_cloud_function_with_token(function_url, audience):
+    """
+    Calls a Google Cloud Function with ID Token authentication.
+    """
+    try:
+        # The audience for the ID token is typically the Cloud Function's URL.
+        # Ensure it matches the function's URL for verification.
+        auth_req = Request()
+        token = id_token.fetch_id_token(auth_req, audience)
+        _LOGGER.info(f"Successfully fetched ID token for audience: {audience}")
+
+        # Make the authenticated request
+        headers = {"Authorization": f"Bearer {token}"}
+        response = requests.post(function_url, headers=headers, json={"message": "Data from Airflow"})
+        response.raise_for_status() # Raise an HTTPError for bad responses (4xx or 5xx)
+
+        _LOGGER.info(f"Cloud Function response: {response.json()}")
+        return response.json()
+
+    except Exception as e:
+        _LOGGER.error(f"Error calling Cloud Function {function_url}: {e}")
+        raise # Re-raise the exception to mark the task as failed
+
+
 # DAG definition
 with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as dag:
 
-    # Run cloud function with HttpOperator
+    # Run cloud function
+    # Replace with your function's name
+
+    invoke_function_task = PythonOperator(
+        task_id='invoke_cloud_function',
+        python_callable=call_cloud_function_with_token,
+        op_kwargs={
+            'function_url': TARGET_FUNCTION_URL,
+            'audience': TARGET_FUNCTION_URL
+        },
+    )
+    
     download_data = HttpOperator(
         task_id='download-kaggle-data',
         method='POST',
