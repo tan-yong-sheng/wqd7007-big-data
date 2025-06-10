@@ -20,6 +20,13 @@ resource "google_project_iam_member" "storage_object_admin_role" {
   member  = "serviceAccount:${google_service_account.composer_service_account.email}"
 }
 
+# Grant Cloud Functions Invoker role to the Composer Service Account
+resource "google_project_iam_member" "cloud_functions_invoker_role" {
+  project = var.project_id
+  role    = "roles/cloudfunctions.invoker"
+  member  = "serviceAccount:${google_service_account.composer_service_account.email}"
+}
+
 # Grant the SA permissions on the DAGs bucket (critical for Composer)
 resource "google_storage_bucket_iam_member" "dags_bucket_iam" {
   bucket = google_storage_bucket.dags_bucket.name
@@ -50,6 +57,7 @@ resource "google_composer_environment" "composer_env" {
     google_project_service.composer_api,
     google_project_iam_member.composer_worker_role, # Ensure roles are granted before Composer creation
     google_project_iam_member.storage_object_admin_role,
+    google_project_iam_member.cloud_functions_invoker_role,
     google_storage_bucket_iam_member.dags_bucket_iam # Ensure bucket IAM is set
   ]
 
