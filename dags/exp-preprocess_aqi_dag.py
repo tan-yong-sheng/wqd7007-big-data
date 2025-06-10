@@ -69,6 +69,7 @@ with DAG("SparkETL-exp", schedule_interval="@weekly", default_args=default_args)
     # Part 2 - Running workloads with Dataproc serverless    
     create_batch = DataprocCreateBatchOperator(
         task_id="batch_create",
+        region=REGION,
         batch={
             "pyspark_batch": {
                 "main_python_file_uri": PYTHON_FILE_LOCATION,
