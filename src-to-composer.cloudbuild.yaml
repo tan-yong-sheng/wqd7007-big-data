@@ -7,6 +7,15 @@ steps:
       - |
         gsutil -m rsync -d -r src gs://${_SRC_BUCKET}/src
 
+  # sync to local dags/ folder to google cloud storage
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        gsutil -m rsync -d -r dags gs://${_SRC_BUCKET}/dags
+
+
 options:
   logging: CLOUD_LOGGING_ONLY
 
