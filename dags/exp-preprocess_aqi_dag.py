@@ -48,7 +48,7 @@ default_args = {
 }
 
 # DAG definition
-with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as dag:
+with DAG("SparkETL-exp", schedule_interval="@weekly", default_args=default_args) as dag:
 
     ### ----------------------------------------------------------- ###
     # Part 1 - Run cloud function
