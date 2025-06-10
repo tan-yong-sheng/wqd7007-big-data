@@ -5,7 +5,6 @@ import logging
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.providers.http.operators.http import HttpOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobOperator
 
 from google.auth.transport.requests import Request
@@ -57,19 +56,31 @@ default_args = {
 }
 
 
+def invoke_cloud_function_with_auth(region: str, project_id: str, function_name: str):
+    FUNCTION_URL = f"https://{region}-{project_id}.cloudfunctions.net/{function_name}"
+    AUDIENCE_URL = FUNCTION_URL # The audience for the ID token should match the function's URL
+
+    # ... (function_url and audience construction) ...
+    auth_req = Request()
+    token = id_token.fetch_id_token(auth_req, AUDIENCE_URL) # <-- This is the magic
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    response = requests.post(FUNCTION_URL, headers=headers)
+    response.raise_for_status()
+    return response.json()
+
+
 # DAG definition
 with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as dag:
 
-    # Part 1 - Run cloud function with HttpOperator
-    download_data = HttpOperator(
-        task_id='download-kaggle-data',
-        method='POST',
-        http_conn_id='http_default',
-        endpoint=FUNCTION_NAME,
-        headers={"Content-Type": "application/json"},
-        data={
-            "bucket-name": BUCKET_NAME,  # passing the bucket name directly
-        },
+    # Part 1 - Run cloud function
+    download_data = PythonOperator(
+        task_id='invoke_download_kaggle_data_function',
+        python_callable=invoke_cloud_function_with_auth,
+        op_kwargs = {
+            "region": REGION,
+            "project_id": PROJECT_ID,
+            "function_name": FUNCTION_NAME
+        }
     )
 
     # Submit PySpark job to Dataproc
