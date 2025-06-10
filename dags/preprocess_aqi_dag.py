@@ -91,7 +91,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
     # Run cloud function
     # Replace with your function's name
 
-    invoke_function_task = PythonOperator(
+    download_data = PythonOperator(
         task_id='invoke_cloud_function',
         python_callable=call_cloud_function_with_token,
         op_kwargs={
@@ -99,17 +99,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
             'audience': TARGET_FUNCTION_URL
         },
     )
-    
-    download_data = HttpOperator(
-        task_id='download-kaggle-data',
-        method='POST',
-        http_conn_id='http_default',
-        endpoint=FUNCTION_NAME,
-        headers={"Content-Type": "application/json"},
-        data={
-            "bucket-name": BUCKET_NAME,  # passing the bucket name directly
-        },
-    )
+
 
     # Submit PySpark job to Dataproc
     t2 = DataprocSubmitJobOperator(
