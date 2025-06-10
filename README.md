@@ -16,3 +16,16 @@ Using composer to automate dataproc cluster creation
 - interesting yet hard to set up: https://medium.com/google-cloud/setting-up-a-datamesh-using-dataplex-and-cloud-composer-5742d30918b0
 
 - Terraform with cloud build: https://blog.devops.dev/terraform-using-google-cloud-build-a-very-basic-example-723f5fb58bca
+
+
+```
+export COMPOSER_ENV_NAME=airflow
+export REGION=us-central1
+export PROJECT_ID=gp-461213
+
+gcloud composer environments run ${COMPOSER_ENV_NAME} \
+    --location ${REGION} connections -- \
+    add 'http_default' \
+    --conn-type 'http' \
+    --conn-host https://${REGION}-${PROJECT_ID}.cloudfunctions.net
+```

@@ -3,7 +3,7 @@ import json
 
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.providers.google.cloud.operators.functions import CloudFunctionInvokeFunctionOperator
+from airflow.providers.http.operators.http import SimpleHttpOperator
 from airflow.providers.google.cloud.operators.dataproc import (
     DataprocCreateBatchOperator,
     DataprocDeleteBatchOperator,
@@ -51,15 +51,16 @@ default_args = {
 with DAG("SparkETL-exp", schedule_interval="@weekly", default_args=default_args) as dag:
 
     ### ----------------------------------------------------------- ###
-    # Part 1 - Run cloud function
-    download_data = CloudFunctionInvokeFunctionOperator(
-        task_id="download-kaggle-data",
-        function_id="download-kaggle-data",
-        location=REGION,
-        input_data=json.dumps({
-            "bucket-name": BUCKET_NAME,
+    # Part 1 - Run cloud function with SimpleHttpOperator
+    download_data = SimpleHttpOperator(
+        task_id='download-kaggle-data',
+        method='POST',
+        http_conn_id='http_default',
+        endpoint=FUNCTION_NAME,
+        headers={"Content-Type": "application/json"},
+        data=json.dumps({
+            "bucket-name": BUCKET_NAME,  # passing the bucket name directly
         }),
-        gcp_conn_id="google_cloud_default"
     )
    
     ## download data via invoking cloud function
