@@ -19,6 +19,10 @@ Using composer to automate dataproc cluster creation
 
 
 ```
+gcloud secrets create kaggle-json --data-file=kaggle.json
+```
+
+```
 export COMPOSER_ENV_NAME=airflow
 export REGION=us-central1
 export PROJECT_ID=gp-461213
