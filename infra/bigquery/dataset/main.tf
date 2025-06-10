@@ -1,5 +1,7 @@
 # --- BigQuery ---
 
+# Note: We are intentionally avoiding Terraform for BigQuery schema creation and management
+# due to the inherent difficulties it poses for future schema migrations and evolving data models.
 
 ## 1. Activate necessary APIs
 

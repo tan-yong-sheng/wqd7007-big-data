@@ -24,8 +24,3 @@ module "bigquery_dataset" {
   project_id = var.project_id
   location = var.location
 }
-
-#module "table" {
-#  source = "./bigquery/table"
-#  location = var.location
-#}
