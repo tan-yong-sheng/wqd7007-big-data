@@ -33,8 +33,6 @@ DATASET_FILE = f"gs://{BUCKET_NAME}/dataset/co2_emissions_canada.csv"
 
 ## Variables for Cloud Function trigger to download data from Kaggle
 FUNCTION_NAME = "download_kaggle_data"
-TARGET_FUNCTION_URL = f"https://{REGION}-{PROJECT_ID}.cloudfunctions.net/{FUNCTION_NAME}"
-AUDIENCE_URL = TARGET_FUNCTION_URL # For Cloud Functions, the audience is typically the function's URL itself.
 
 # Setup configuration for pyspark job in Dataproc
 PYSPARK_JOB = {
@@ -59,48 +57,20 @@ default_args = {
 }
 
 
-_LOGGER = logging.getLogger(__name__)
-
-def call_cloud_function_with_token(function_url, audience):
-    """
-    Calls a Google Cloud Function with ID Token authentication.
-    """
-    try:
-        # The audience for the ID token is typically the Cloud Function's URL.
-        # Ensure it matches the function's URL for verification.
-        auth_req = Request()
-        token = id_token.fetch_id_token(auth_req, audience)
-        _LOGGER.info(f"Successfully fetched ID token for audience: {audience}")
-
-        # Make the authenticated request
-        headers = {"Authorization": f"Bearer {token}",
-                    "Content-Type": "application/json"}
-        response = requests.post(function_url, headers=headers)
-        response.raise_for_status() # Raise an HTTPError for bad responses (4xx or 5xx)
-
-        _LOGGER.info(f"Cloud Function response: {response.json()}")
-        return response.json()
-
-    except Exception as e:
-        _LOGGER.error(f"Error calling Cloud Function {function_url}: {e}")
-        raise # Re-raise the exception to mark the task as failed
-
-
 # DAG definition
 with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as dag:
 
-    # Run cloud function
-    # Replace with your function's name
-
-    download_data = PythonOperator(
-        task_id='invoke_cloud_function',
-        python_callable=call_cloud_function_with_token,
-        op_kwargs={
-            'function_url': TARGET_FUNCTION_URL,
-            'audience': AUDIENCE_URL
+    # Part 1 - Run cloud function with HttpOperator
+    download_data = HttpOperator(
+        task_id='download-kaggle-data',
+        method='POST',
+        http_conn_id='http_default',
+        endpoint=FUNCTION_NAME,
+        headers={"Content-Type": "application/json"},
+        data={
+            "bucket-name": BUCKET_NAME,  # passing the bucket name directly
         },
     )
-
 
     # Submit PySpark job to Dataproc
     t2 = DataprocSubmitJobOperator(
