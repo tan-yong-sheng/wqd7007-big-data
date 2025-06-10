@@ -9,6 +9,8 @@ resource "google_project_service" "artifactregistry_api" {
   disable_dependent_services = false
 }
 
+
+
 resource "google_project_service" "bigquery_api" {
   project = var.project_id
   service = "bigquery.googleapis.com"
