@@ -20,8 +20,8 @@ Basically there are 2 ways for the deployment of this Big Data Infrastructure, a
 - Part 6 - Visualization with Looker Studio
 
 (b) Automated deployment via Terraform script
-- [Intro Guide](/setup_docs/big_data_project/deployment_via_terraform/README.md)
-- [Terraform Resource Configuration](/setup_docs/big_data_project/deployment_via_terraform/terraform-gcp-data-lakehouse-infrastructure.md)
+- [Intro Guide for Automated Deployment of Big Data Infrastructure via Terraform](/setup_docs/big_data_project/deployment_via_terraform/README.md)
+- [Terraform Resource Overview: GCP Big Data](/setup_docs/big_data_project/deployment_via_terraform/terraform-gcp-data-lakehouse-infrastructure.md)
 
 Also, we manually set up Continuous Integration/Continuous Delivery (CI/CD) via Google Cloud Build for some purposes mentioned as below:
 - [Automating Cloud Function's deployment when push to Github via Cloud Build]

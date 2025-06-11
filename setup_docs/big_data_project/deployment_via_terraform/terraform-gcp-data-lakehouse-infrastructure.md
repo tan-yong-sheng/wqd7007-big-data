@@ -1,4 +1,4 @@
-## Terraform for Automated Provisioning of Big Data Infrastructure on GCP
+## Terraform Resource Overview: GCP Big Data
 
 > Note: please read the intro guide first [here](./README.md) before looking into this terraform's resource configuration setup,
 

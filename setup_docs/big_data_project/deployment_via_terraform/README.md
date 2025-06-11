@@ -1,4 +1,4 @@
-# Guide to Deploy Big Data Infrastructure to GCP via Terraform
+# Intro Guide for Automated Deployment of Big Data Infrastructure via Terraform
 
 Terraform is an infrastructure-as-code (IaC) tool that enables automated provisioning and management of cloud resources. This guide walks you through deploying a complete big data infrastructure stack to Google Cloud Platform.
 
