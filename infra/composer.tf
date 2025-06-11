@@ -40,18 +40,6 @@ resource "google_storage_bucket_iam_member" "dags_bucket_iam" {
   ]
 }
 
-# --- DAGS bucket ---
-resource "google_storage_bucket" "dags_bucket" {
-  name          = var.dags_bucket
-  project       = var.project_id
-  location      = var.region
-  force_destroy = false
-  uniform_bucket_level_access = true
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
 
 # --- Cloud Composer Environment ---
 resource "google_composer_environment" "composer_env" {
@@ -63,6 +51,7 @@ resource "google_composer_environment" "composer_env" {
     google_project_service.composer_api,
     google_project_iam_member.composer_worker_role, # Ensure roles are granted before Composer creation
     google_project_iam_member.storage_object_admin_role,
+    google_storage_bucket.dags_bucket,
     google_storage_bucket_iam_member.dags_bucket_iam # Ensure bucket IAM is set
   ]
 
