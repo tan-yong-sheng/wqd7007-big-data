@@ -14,7 +14,7 @@ REGION = os.environ.get('REGION')
 ZONE = os.environ.get('ZONE')
 
 BUCKET_NAME = os.environ.get('BUCKET')
-TEMP_BUCKET_NAME = os.environ.get('STAGING_BUCKET')
+TEMP_BUCKET_NAME = os.environ.get('TEMP_BUCKET')
 DAGS_BUCKET_NAME = os.environ.get('DAGS_BUCKET')
 
 ## Variables for Dataproc jobs
@@ -91,8 +91,8 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
         configuration={
             "query": {
                 "query": """
-                    MERGE INTO fact.global_air_pollution AS target
-                    USING staging.global_air_pollution AS source
+                    MERGE INTO fact.air_pollution_data AS target
+                    USING staging.air_pollution_data AS source
                     ON target.country = source.country 
                     AND target.city = source.city
                     WHEN MATCHED THEN
