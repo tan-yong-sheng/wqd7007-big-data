@@ -175,4 +175,4 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
     )
 
     # Define task dependencies
-    download_data >> etl_data >> upsert_data
+    download_data >> create_staging_table >> etl_data >> create_fact_table >> upsert_data
