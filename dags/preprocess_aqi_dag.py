@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobOperator
-from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
+from airflow.providers.google.cloud.operators.bigquery import (BigQueryCreateEmptyTableOperator, 
+                                                               BigQueryInsertJobOperator)
 
 # Project Configuration
 PROJECT_ID = os.environ.get('MY_PROJECT_ID')
@@ -76,6 +77,29 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
         }
     )
 
+    # Create staging_table in BigQuery if not exists
+    create_staging_table = BigQueryCreateEmptyTableOperator(
+        task_id="create_staging_table",
+        dataset_id="staging",
+        table_id="air_pollution_data",
+        schema_fields=[
+            {"name": "country", "type": "STRING", "mode": "REQUIRED"},
+            {"name": "city", "type": "STRING", "mode": "REQUIRED"},
+            {"name": "aqi_value", "type": "INT64", "mode": "NULLABLE"},
+            {"name": "aqi_category", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "co_aqi_value", "type": "INT64", "mode": "NULLABLE"},
+            {"name": "co_aqi_category", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "ozone_aqi_value", "type": "INT64", "mode": "NULLABLE"},
+            {"name": "ozone_aqi_category", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "no2_aqi_value", "type": "FLOAT64", "mode": "NULLABLE"},
+            {"name": "no2_aqi_category", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "pm25_aqi_value", "type": "INT64", "mode": "NULLABLE"},
+            {"name": "pm25_aqi_category", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "dominant_pollutant", "type": "STRING", "mode": "NULLABLE"}
+        ],
+        create_disposition='CREATE_IF_NEEDED'
+    )
+
     # Submit PySpark job to Dataproc
     etl_data = DataprocSubmitJobOperator(
         task_id="pyspark_task",
@@ -83,6 +107,29 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
         region=REGION,
         project_id=PROJECT_ID,
         gcp_conn_id="google_cloud_default"
+    )
+
+    # Create fact_table in BigQuery if not exists
+    create_fact_table = BigQueryCreateEmptyTableOperator(
+        task_id="create_fact_table",
+        dataset_id="fact",
+        table_id="air_pollution_data",
+        schema_fields=[
+            {"name": "country", "type": "STRING", "mode": "REQUIRED"},
+            {"name": "city", "type": "STRING", "mode": "REQUIRED"},
+            {"name": "aqi_value", "type": "INT64", "mode": "NULLABLE"},
+            {"name": "aqi_category", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "co_aqi_value", "type": "INT64", "mode": "NULLABLE"},
+            {"name": "co_aqi_category", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "ozone_aqi_value", "type": "INT64", "mode": "NULLABLE"},
+            {"name": "ozone_aqi_category", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "no2_aqi_value", "type": "FLOAT64", "mode": "NULLABLE"},
+            {"name": "no2_aqi_category", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "pm25_aqi_value", "type": "INT64", "mode": "NULLABLE"},
+            {"name": "pm25_aqi_category", "type": "STRING", "mode": "NULLABLE"},
+            {"name": "dominant_pollutant", "type": "STRING", "mode": "NULLABLE"}
+        ],
+        create_disposition='CREATE_IF_NEEDED'
     )
 
     # Task to write data to BigQuery
@@ -106,7 +153,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
                         no2_aqi_value = source.no2_aqi_value,
                         no2_aqi_category = source.no2_aqi_category,
                         pm25_aqi_value = source.pm25_aqi_value,
-                        pm25_aqi_category = source.pm25_aqi_category
+                        pm25_aqi_category = source.pm25_aqi_category,
                         dominant_pollutant = source.dominant_pollutant
                     WHEN NOT MATCHED THEN
                     INSERT (country, city, aqi_value, aqi_category, 
