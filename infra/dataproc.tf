@@ -150,6 +150,12 @@ resource "google_dataproc_cluster" "dataproc_cluster" {
     #}
   }
 
+  timeouts {
+    create = "30m"
+    update = "20m"
+    delete = "10m"
+  }
+
   # Ensure all necessary APIs and buckets are ready before creating the cluster.
   depends_on = [
     google_compute_subnetwork.default_subnet_private_access_update,  # Explicitly depend on the subnetwork update to ensure Private Google Access is enabled.

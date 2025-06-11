@@ -1,5 +1,4 @@
 .env
-*.tfvars
 *.tfstate
 *.tfstate.backup
 

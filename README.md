@@ -41,3 +41,35 @@ gcloud dataproc clusters create air-quality-cluster \
   --bucket=staging-air-pollution-data-my \
   --temp-bucket=temp-air-pollution-data-my
 ```
+
+
+```
+export GCP_PROJECT_ID="gp-461213"
+export GCP_REGION="us-central1"
+export DATAPROC_CLUSTER_NAME="air-quality-cluster"
+export STAGING_BUCKET_NAME="staging-air-pollution-data-my"
+export TEMP_BUCKET_NAME="temp-air-pollution-data-my"
+export SERVICE_ACCOUNT="1000028997311-compute@developer.gserviceaccount.com"
+
+gcloud dataproc clusters create "${DATAPROC_CLUSTER_NAME}" \
+    --project="${GCP_PROJECT_ID}" \
+    --region="${GCP_REGION}" \
+    --network="default" \
+    --service-account=${SERVICE_ACCOUNT} \
+    --scopes="https://www.googleapis.com/auth/cloud-platform" \
+    --master-machine-type="n1-standard-2" \
+    --master-boot-disk-type="pd-standard" \
+    --master-boot-disk-size="30" \
+    --num-workers="2" \
+    --worker-machine-type="n1-standard-2" \
+    --worker-boot-disk-type="pd-ssd" \
+    --worker-boot-disk-size="30" \
+    --image-version="2.1-debian11" \
+    --bucket="${STAGING_BUCKET_NAME}" \
+    --temp-bucket="${TEMP_BUCKET_NAME}" \
+    --labels="environment=dev,created_by=gcloud-script,purpose=etl-pipeline" \
+    --max-idle="30m" \
+    --enable-component-gateway \
+    --no-address
+
+```
