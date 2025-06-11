@@ -1,12 +1,13 @@
 # Data LakeHouse Architecture Pipeline
 
-> Important: please test if the gcloud secrets could be successfully deployed via terraform...
+> Important 1: please test if the gcloud secrets could be successfully deployed via terraform...
+> Important 2: you haven't write how to deploy CI/CD on cloud build
 
 This project demonstrates the design and implementation of a basic Data LakeHouse Architecture Pipeline using Google Cloud Platform (GCP) services. The pipeline is structured into six key layers: Orchestration, Ingestion, Storage, Process, Analytics, and Visualization. Each layer plays a critical role in transforming raw data into actionable insights, ensuring scalability, reliability, and automation at every stage of the data workflow.
 
 We would like to invite you to explore our documentation guide, which outlines the setup steps for creating a simple Data Lakehouse in Google Cloud. Our team utilized tools like Cloud Functions, Google Cloud Storage, Dataproc, BigQuery, and Looker Studio to build this streamlined solution.
 
-Basically there are 2 ways for the deployment of this Big Data Infrastructure:
+Basically there are 2 ways for the deployment of this Big Data Infrastructure, and you just need to choose either of them:
 
 (a) Manually executing gcloud sdk on Google Cloud Shell to deploy each services one by one:
 
@@ -16,10 +17,15 @@ Basically there are 2 ways for the deployment of this Big Data Infrastructure:
 - [Part 3 - Analytics Layer with BigQuery](/setup_docs/big_data_project/deployment_via_gcloud_sdk/part3-analytics-layer.md)
 - [Part 4 - Orchestration Layer with Composer](/setup_docs/big_data_project/deployment_via_gcloud_sdk/part4-orchestration-layer.md)
 - Part 5 - Data Governance Layer with Dataplex
+- Part 6 - Visualization with Looker Studio
 
 (b) Automated deployment via Terraform script
 - [Intro Guide](/setup_docs/big_data_project/deployment_via_terraform/README.md)
 - [Terraform Resource Configuration](/setup_docs/big_data_project/deployment_via_terraform/terraform-gcp-data-lakehouse-infrastructure.md)
+
+Also, we manually set up Continuous Integration/Continuous Delivery (CI/CD) via Google Cloud Build for some purposes mentioned as below:
+- [Automating Cloud Function's deployment when push to Github via Cloud Build]
+- [Automating DAGs upload to Composer when push to Github via Cloud Build]
 
 ## Contribution
 

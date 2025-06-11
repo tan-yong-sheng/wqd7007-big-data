@@ -2,11 +2,21 @@
 
 Terraform is an infrastructure-as-code (IaC) tool that enables automated provisioning and management of cloud resources. This guide walks you through deploying a complete big data infrastructure stack to Google Cloud Platform.
 
-> Please refer to the [documentation](./README.md) to understand which big data infrastructure components are automatically provisioned via Terraform.
+> Please refer to the [Terraform Resource Configuration documentation](./README.md) to understand which big data infrastructure components are automatically provisioned via Terraform.
 
+1. Authenticate with Google Cloud
 
+Run the following commands to authenticate:
 
-1. Configure Terraform Variables
+```
+gcloud auth login
+gcloud auth default-application login
+```
+
+- `gcloud auth login`: Authenticates your user account for use with the Google Cloud CLI.
+- `gcloud auth application-default login`: Sets up credentials for Application Default Credentials (used by Terraform and client libraries).
+
+2. Configure Terraform Variables
 
 Navigate to the infrastructure directory:
 
@@ -24,7 +34,7 @@ Edit the `terraform.tfvars` file and fill in your Kaggle credentials. You can ob
 
 Extract the username and key values from your `kaggle.json` file and add them to the `kaggle_username` and `kaggle_key` variables in `terraform.tfvars`.
 
-2. **Validate Configuration**
+3. **Validate Configuration**
 
 Validate your Terraform configuration to ensure there are no syntax errors:
 
@@ -35,7 +45,7 @@ terraform validate
 ![](/images/terraform-validate.png)
 
 
-2. **Preview Changes**
+4. **Preview Changes**
 
 Generate an execution plan to preview the infrastructure changes Terraform will make. This allows you to review all resources that will be created, modified, or destroyed:
 
@@ -47,7 +57,7 @@ terraform plan
 
 ![](/images/terraform-plan2.png)
 
-3. **Deploy Infrastructure**
+5. **Deploy Infrastructure**
 
 Apply the changes to deploy your big data infrastructure. Terraform will prompt for confirmation before making any changes to your cloud resources:
 
