@@ -14,7 +14,7 @@ variable "location" {
 }
 
 variable "zone" {
-  description = "The GCP zone for the Dataproc PHS cluster."
+  description = "The GCP zone for the Dataproc cluster."
   type        = string
 }
 
@@ -24,7 +24,7 @@ variable "composer_env_name" {
 }
 
 variable "dataproc_cluster_name" {
-  description = "The name of the Dataproc PHS cluster."
+  description = "The name of the Dataproc cluster."
   type        = string
 }
 

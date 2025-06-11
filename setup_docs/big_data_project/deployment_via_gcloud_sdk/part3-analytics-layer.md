@@ -1,7 +1,8 @@
 # Part 3 - Analytics Layer: Set up BigQuery
-### Setting Up BigQuery Tables for CO2 Emissions Data
 
-This guide outlines the steps to create the necessary BigQuery datasets and tables for storing CO2 emissions data.
+## Setting Up BigQuery Tables for Global Air Pollution Data
+
+This guide outlines the steps to create the necessary BigQuery datasets and tables for storing global air pollution data.
 
 
 Step 1: Create Datasets
@@ -13,8 +14,6 @@ First, create the dataset in BigQuery. We've created two datasets in our BigQuer
 
 (i) staging dataset:
 
-![](../images/bigquery-create-staging-table-schema.png)
-
 ```sql
 CREATE SCHEMA IF NOT EXISTS staging
 OPTIONS (
@@ -22,9 +21,9 @@ OPTIONS (
 );
 ```
 
-(ii) fact dataset:
+![](/images/bigquery-create-staging-dataset.png)
 
-![](../images/bigquery-create-fact-table-schema.png)
+(ii) fact dataset:
 
 ```sql
 CREATE SCHEMA IF NOT EXISTS fact
@@ -33,9 +32,8 @@ OPTIONS (
 );
 ```
 
-You could also create them manually via the UI:
+![](/images/bigquery-create-fact-dataset.png)
 
-![](../images/3_Part%203%20-%20Analytics%20Layer%20Set%20u.jpg)
 
 Step 2: Create Tables
 ---------------------
@@ -43,8 +41,6 @@ Step 2: Create Tables
 ### Create Staging Table
 
 *   The staging table will temporarily store the processed data before moving it to the fact table:
-
-![](../images/2_Part%203%20-%20Analytics%20Layer%20Set%20u.jpg)
 
 ```sql
 CREATE TABLE IF NOT EXISTS staging.air_pollution_data(
@@ -63,12 +59,12 @@ CREATE TABLE IF NOT EXISTS staging.air_pollution_data(
   dominant_pollutant STRING
 );
 ```
+![](/images/bigquery-create-staging-table.png)
+
 
 ### Create Fact Table
 
 *   The fact table will store the final, clean data:
-
-![](../images/Part%203%20-%20Analytics%20Layer%20Set%20u.jpg)
 
 ```sql
 CREATE TABLE IF NOT EXISTS fact.air_pollution_data(
@@ -87,6 +83,9 @@ CREATE TABLE IF NOT EXISTS fact.air_pollution_data(
   dominant_pollutant STRING
 );
 ```
+
+![](/images/bigquery-create-fact-table.png)
+
 
 Table Details
 -------------
@@ -110,6 +109,7 @@ Both tables share identical schema with the following columns:
 Data Flow
 ---------
 
-1.  Processed data from Dataproc is first loaded into the staging table
-2.  Data is then merged into the fact table using the upsert operation, automated and orchestrated by Google Cloud Composer
-3.  The staging table is used as a temporary landing zone to ensure data quality before final loading to avoid data duplication during data insertion, as BigQuery doesn't enforce unique key validation
+1.  Processed data from Dataproc is first loaded into the `staging.air_pollution_data` table
+2.  Data is then merged into the `fact.air_pollution_data` table using the upsert operation, automated and orchestrated by Google Cloud Composer
+3.  The `staging.air_pollution_data` table is used as a temporary landing zone to hold PySpark-transformed data from Dataproc, enabling upserts into `fact.air_pollution_data` table via BigQuery's MERGE statement to prevent duplicate record insertion.
+

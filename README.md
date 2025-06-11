@@ -1,75 +1,22 @@
-# WQD7007 Big Data Project
+# Data LakeHouse Architecture Pipeline
 
-- Note: need to solve how to deploy secrets automatically via cloud build or github workflows
+This project demonstrates the design and implementation of a basic Data LakeHouse Architecture Pipeline using Google Cloud Platform (GCP) services. The pipeline is structured into six key layers: Orchestration, Ingestion, Storage, Process, Analytics, and Visualization. Each layer plays a critical role in transforming raw data into actionable insights, ensuring scalability, reliability, and automation at every stage of the data workflow.
 
-Test for Step 1 in terminal:
-- curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" <CLOUD_FUNCTION_URL>
+We would like to invite you to explore our documentation guide, which outlines the setup steps for creating a simple Data Lakehouse in Google Cloud. Our team utilized tools like Cloud Functions, Google Cloud Storage, Dataproc, BigQuery, and Looker Studio to build this streamlined solution.
+- [Part 1 - Data Ingestion Layer with Cloud Function](/setup_docs/big_data_project/deployment_via_gcloud_sdk/part1-data-ingestion-layer.md)
+- [Part 2a - Data Processing Layer with Dataproc](/setup_docs/big_data_project/deployment_via_gcloud_sdk/part2a-data-processing-layer.md)
+- [Part 2b - Data Processing Layer with BigQuery SQL in BigQuery](/setup_docs/big_data_project/deployment_via_gcloud_sdk/part2b-data-processing-layer.md)
+- [Part 3 - Analytics Layer with BigQuery](/setup_docs/big_data_project/deployment_via_gcloud_sdk/part3-analytics-layer.md)
+- [Part 4 - Orchestration Layer with Composer](/setup_docs/big_data_project/deployment_via_gcloud_sdk/part4-orchestration-layer.md)
+- Part 5 - Data Governance Layer with Dataplex
 
-- terraform gcp secrets https://medium.com/google-cloud/terraform-on-google-cloud-v1-3-secret-manager-and-its-what-why-and-how-c4f56adb0c92
+## Contribution
 
-Cloud build for Composer
-- https://medium.com/@amarachi.ogu/implementing-ci-cd-in-cloud-composer-using-cloud-build-and-github-part-2-a721e4ed53da
+Thank you, team, for your hard work, support, and collaboration:
 
-Using composer to automate dataproc cluster creation
-- https://freedium.cfd/https://medium.com/google-cloud/use-composer-for-dataproc-serverless-workloads-27ccf9561539; https://cloud.google.com/composer/docs/composer-2/run-dataproc-workloads; https://airflow.apache.org/docs/apache-airflow-providers-google/stable/operators/cloud/dataproc.html#create-a-batch
-
-- interesting yet hard to set up: https://medium.com/google-cloud/setting-up-a-datamesh-using-dataplex-and-cloud-composer-5742d30918b0
-
-- Terraform with cloud build: https://blog.devops.dev/terraform-using-google-cloud-build-a-very-basic-example-723f5fb58bca
-
-- Terraform for BigQuery https://github.com/sudovazid/gcp_terraform/tree/main
-
-```
-gcloud secrets create kaggle-json --data-file=kaggle.json
-```
-
-```
-export PROJECT_ID=gp-461213
-export REGION=us-central1
-export BUCKET=air-pollution-data-my
-export STAGING_BUCKET=staging-air-pollution-data-my
-export TEMP_BUCKET=temp-air-pollution-data-my
-export DATAPROC_CLUSTER_NAME=air-qualiterty-cluster
-export SERVICE_ACCOUNT_EMAIL=1000028997311-compute@developer.gserviceaccount.com
-```
-
-
-```
-gcloud dataproc clusters create air-quality-cluster \
-  --region=us-central1 \
-  --single-node \
-  --bucket=staging-air-pollution-data-my \
-  --temp-bucket=temp-air-pollution-data-my
-```
-
-
-```
-export GCP_PROJECT_ID="gp-461213"
-export GCP_REGION="us-central1"
-export DATAPROC_CLUSTER_NAME="air-quality-cluster"
-export STAGING_BUCKET_NAME="staging-air-pollution-data-my"
-export TEMP_BUCKET_NAME="temp-air-pollution-data-my"
-export SERVICE_ACCOUNT="1000028997311-compute@developer.gserviceaccount.com"
-
-gcloud dataproc clusters create "${DATAPROC_CLUSTER_NAME}" \
-    --project="${GCP_PROJECT_ID}" \
-    --region="${GCP_REGION}" \
-    --network="default" \
-    --service-account=${SERVICE_ACCOUNT} \
-    --scopes="https://www.googleapis.com/auth/cloud-platform" \
-    --master-machine-type="n1-standard-2" \
-    --master-boot-disk-type="pd-standard" \
-    --master-boot-disk-size="30" \
-    --num-workers="2" \
-    --worker-machine-type="n1-standard-2" \
-    --worker-boot-disk-type="pd-ssd" \
-    --worker-boot-disk-size="30" \
-    --image-version="2.1-debian11" \
-    --bucket="${STAGING_BUCKET_NAME}" \
-    --temp-bucket="${TEMP_BUCKET_NAME}" \
-    --labels="environment=dev,created_by=gcloud-script,purpose=etl-pipeline" \
-    --max-idle="30m" \
-    --enable-component-gateway \
-    --no-address
-
-```
+- Chow Kai Ern
+- Karam
+- Kevin Wong 
+- Li Yuexin
+- Mohammed Iqram
+- Tan Yong Sheng

@@ -1,6 +1,6 @@
 # Part 4 - Orchestration Layer : Setup Google Cloud Composer
-Setting Up Google Cloud Composer Environment to orchestrate ETL Pipeline
-------------------------------------------------------------------------
+
+## Setting Up Google Cloud Composer Environment to orchestrate ETL Pipeline
 
 This guide outlines the steps to create a Cloud Composer environment for orchestrating ETL workflows using Airflow.
 
@@ -18,7 +18,7 @@ Step 1: Environment Setup
 
 The commands are executed under the cloud shell terminal
 
-![](../../../images/cloud-shell.png)
+![](/images/cloud-shell.png)
 
 *   Set environment variables in Cloud Shell:
 
@@ -59,7 +59,7 @@ Step 3: Create Cloud Composer Environment
 ```
 
 This will start a composer instance with following environment variables:
-![image](../../../images/composer-startup.png)
+![image](/images/composer-startup.png)
 
 
 
@@ -267,22 +267,22 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
 So, here is the flow of the tasks being executed and automated:
 
 *   Scraping data from Kaggle via Python code, executed via Cloud Function + Store the scraped data into Google Cloud Storage
-*   Create the staging.air_pollution_data table to hold PySpark-transformed data from Dataproc, enabling upserts into fact.air_pollution_data via BigQuery's MERGE statement to prevent duplicate record insertion.
-*   Perform ETL processing via Pyspark in DataProc, and then load the clean data into staging table in BigQuery
+*   Create the `staging.air_pollution_data` table to hold PySpark-transformed data from Dataproc, enabling upserts into fact.air_pollution_data via BigQuery's MERGE statement to prevent duplicate record insertion.
+*   Perform ETL processing via Pyspark in DataProc, and then load the clean data into `staging.air_pollution_data` table in BigQuery
 *   Create the `fact.air_pollution_data` table which serves as a data warehouse for our dataset 
-*   Upsert the data from staging table in BigQuery to fact table in BigQuery
+*   Upsert the data from staging table in BigQuery to `fact.air_pollution_data` table in BigQuery
 
-![](../../../images/composer-graph.png)
+![](/images/composer-graph.png)
 
 
 The DAG code is displayed in Airflow UI as well:
 
-![](../../../images/composer-code.png)
+![](/images/composer-code.png)
 
 *   Upload DAG to Composer bucket:
 
 ```bash
-> gsutil cp dags/co2_emissions_dag.py gs://${DAGS_BUCKET}/dags/co2_emissions_dag.py
+> gsutil cp dags/preprocess_aqi_dag.py gs://${DAGS_BUCKET}/dags/preprocess_aqi_dag.py
 ```
 
 Step 7: Verify Deployment
@@ -294,7 +294,7 @@ Step 7: Verify Deployment
 > gsutil cat gs://${DAGS_BUCKET}/dags/preprocess_aqi_dag.py
 ```
 
-![](../../../images/composer-check-dags.png)
+![](/images/composer-check-dags.png)
 
 DAG Details
 -----------
