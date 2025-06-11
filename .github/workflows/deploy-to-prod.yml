@@ -34,10 +34,12 @@ jobs:
             terraform_version: 1.5.7
 
       - name: Terraform init and validate
+        working-directory: ./infra
         run: |
           terraform init
 
       - name: Terraform plan
+        working-directory: ./infra
         run: |
           terraform plan
 
@@ -51,5 +53,6 @@ jobs:
           exclude-workflow-initiator-as-approver: false
 
       - name: Terraform apply
+        working-directory: ./infra
         run: |
           terraform apply
