@@ -20,7 +20,10 @@ resource "google_bigquery_dataset" "fact_dataset" {
   description                 = "Fact table"
   location                    = var.location
 
-  lifecycle { prevent_destroy = true }
+  lifecycle { 
+    prevent_destroy = true
+    ignore_changes = [access, labels]
+  }
 }
 
 ## 2b. Create staging dataset
@@ -31,5 +34,8 @@ resource "google_bigquery_dataset" "staging_dataset" {
   description                 = "Staging table"
   location                    = var.location
 
-  lifecycle { prevent_destroy = true }
+  lifecycle { 
+    prevent_destroy = true
+    ignore_changes = [access, labels]
+  }
 }

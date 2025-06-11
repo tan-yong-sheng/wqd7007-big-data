@@ -39,7 +39,11 @@ variable "bucket" {
 }
 
 variable "staging_bucket" {
-  description = "The name of the staging bucket."
+  description = "The name of the staging bucket to store job dependencies and config files of Dataproc cluster"
   type        = string
 }
 
+variable "temp_bucket" {
+  description = "The name of the temp bucket to hold intermediate and temporary runtime data during Dataproc job execution"
+  type        = string
+}

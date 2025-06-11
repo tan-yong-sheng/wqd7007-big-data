@@ -68,7 +68,7 @@ resource "google_composer_environment" "composer_env" {
         ZONE                = var.zone
         DATAPROC_CLUSTER_NAME = var.dataproc_cluster_name
         BUCKET              = var.bucket
-        STAGING_BUCKET      = var.staging_bucket
+        TEMP_BUCKET      = var.temp_bucket
         DAGS_BUCKET         = google_storage_bucket.dags_bucket.name
       }
     }
