@@ -133,6 +133,9 @@ gcloud dataproc clusters create "${DATAPROC_CLUSTER_NAME}" \
     --no-address
 ```
 
+![](/images/dataproc-multinode-cluster.png)
+
+
 Step 7: GCS to BigQuery Data Pipeline
 -------------------------------------
 
