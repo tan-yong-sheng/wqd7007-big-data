@@ -94,8 +94,6 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
     --role="roles/storage.admin"
 ```
 
-
-
 Step 6: Create Dataproc Cluster
 ----------------------------------
 
@@ -110,11 +108,30 @@ gcloud dataproc clusters create ${DATAPROC_CLUSTER_NAME} \
   --enable-component-gateway
 ```
 
-Output here:
+If you want to create a more powerful multi-node Dataproc cluster with 1 master and 2 worker nodes, you can use the command below, but be warned - if you're on a free trial Google Cloud account, this will likely fail due to quota limits since it requires 6 vCPUs total. It's better to start with a single-node cluster first and upgrade once you have a paid account with higher resource limits.
 
-![](/images/1_Part%202%20-%20Data%20Processing%20Layer.jpg)
-
-
+```bash
+gcloud dataproc clusters create "${DATAPROC_CLUSTER_NAME}" \
+    --project=${PROJECT_ID} \
+    --region=${REGION} \
+    --network="default" \
+    --service-account=${SERVICE_ACCOUNT_EMAIL} \
+    --scopes="https://www.googleapis.com/auth/cloud-platform" \
+    --master-machine-type="n1-standard-2" \
+    --master-boot-disk-type="pd-standard" \
+    --master-boot-disk-size="30" \
+    --num-workers="2" \
+    --worker-machine-type="n1-standard-2" \
+    --worker-boot-disk-type="pd-ssd" \
+    --worker-boot-disk-size="30" \
+    --image-version="2.1-debian11" \
+    --bucket="${STAGING_BUCKET_NAME}" \
+    --temp-bucket="${TEMP_BUCKET_NAME}" \
+    --labels="environment=dev,created_by=gcloud-script,purpose=etl-pipeline" \
+    --max-idle="30m" \
+    --enable-component-gateway \
+    --no-address
+```
 
 Step 7: GCS to BigQuery Data Pipeline
 -------------------------------------
