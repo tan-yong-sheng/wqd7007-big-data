@@ -23,14 +23,21 @@ Using composer to automate dataproc cluster creation
 gcloud secrets create kaggle-json --data-file=kaggle.json
 ```
 
-- Need to setup `GOOGLE_CREDENTIALS_JSON` at GITHUB secrets for github workflows
-
-
 ```
 export PROJECT_ID=gp-461213
 export REGION=us-central1
 export BUCKET=air-pollution-data-my
-export STAGING_BUCKET=dataproc-temp-us-central1-1000028997311-ze5fqj5o
+export STAGING_BUCKET=staging-air-pollution-data-my
+export TEMP_BUCKET=temp-air-pollution-data-my
 export DATAPROC_CLUSTER_NAME=air-qualiterty-cluster
 export SERVICE_ACCOUNT_EMAIL=1000028997311-compute@developer.gserviceaccount.com
+```
+
+
+```
+gcloud dataproc clusters create air-quality-cluster \
+  --region=us-central1 \
+  --single-node \
+  --bucket=staging-air-pollution-data-my \
+  --temp-bucket=temp-air-pollution-data-my
 ```

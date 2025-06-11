@@ -19,6 +19,17 @@ resource "google_project_iam_member" "storage_object_admin_role" {
   ]
 }
 
+# so that the service account has the right to create the dataproc cluster via composer environment
+resource "google_project_iam_member" "composer_dataproc_editor" {
+  project = var.project_id
+  role    = "roles/dataproc.editor"
+  member  = "serviceAccount:${data.google_project.current_project.number}-compute@developer.gserviceaccount.com"
+  depends_on = [
+    data.google_project.current_project
+  ]
+}
+
+
 # Grant the SA permissions on the DAGs bucket (critical for Composer)
 resource "google_storage_bucket_iam_member" "dags_bucket_iam" {
   bucket = google_storage_bucket.dags_bucket.name

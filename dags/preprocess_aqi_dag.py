@@ -134,7 +134,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
 
     # Task to write data to BigQuery
     upsert_data = BigQueryInsertJobOperator(
-        task_id="upsert_co2_emissions_to_bigquery",
+        task_id="upsert_air_pollution_to_bigquery",
         configuration={
             "query": {
                 "query": """

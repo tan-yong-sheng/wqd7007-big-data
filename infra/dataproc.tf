@@ -109,7 +109,7 @@ resource "google_dataproc_cluster" "dataproc_cluster" {
     temp_bucket    = google_storage_bucket.temp_bucket.name
 
     gce_cluster_config {
-      zone = var.zone
+      zone = null
       # Assign the default Compute Engine service account to cluster VM instances.
       service_account = "${data.google_project.current_project.number}-compute@developer.gserviceaccount.com"
       # Grant full Cloud Platform scope for the service account to access other GCP services.
