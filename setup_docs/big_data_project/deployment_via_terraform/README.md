@@ -34,6 +34,9 @@ Edit the `terraform.tfvars` file and fill in your Kaggle credentials. You can ob
 
 Extract the username and key values from your `kaggle.json` file and add them to the `kaggle_username` and `kaggle_key` variables in `terraform.tfvars`.
 
+
+![](/images/terraform-setup-variable.png)
+
 3. **Validate Configuration**
 
 Validate your Terraform configuration to ensure there are no syntax errors:
