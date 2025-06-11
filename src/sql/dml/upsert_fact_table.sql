@@ -1,5 +1,5 @@
-MERGE INTO fact.global_air_pollution AS target
-USING staging.global_air_pollution AS source
+MERGE INTO fact.air_pollution_data AS target
+USING staging.air_pollution_data AS source
 ON target.country = source.country 
    AND target.city = source.city
 WHEN MATCHED THEN
@@ -13,7 +13,7 @@ UPDATE SET
       no2_aqi_value = source.no2_aqi_value,
       no2_aqi_category = source.no2_aqi_category,
       pm25_aqi_value = source.pm25_aqi_value,
-      pm25_aqi_category = source.pm25_aqi_category
+      pm25_aqi_category = source.pm25_aqi_category,
       dominant_pollutant = source.dominant_pollutant
 WHEN NOT MATCHED THEN
 INSERT (country, city, aqi_value, aqi_category, 

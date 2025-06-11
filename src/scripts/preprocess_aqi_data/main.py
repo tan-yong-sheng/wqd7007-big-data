@@ -2,7 +2,7 @@ import argparse
 
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, greatest, when
-from pyspark.sql.types import StructType, StructField, StringType, FloatType
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
 def create_spark_session():
     # Create Spark session with the necessary configurations
@@ -24,15 +24,15 @@ def preprocess_aqi_data(spark, gcs_path):
     schema = StructType([
         StructField("country", StringType(), True),
         StructField("city", StringType(), True),
-        StructField("aqi_value", StringType(), True),
+        StructField("aqi_value", IntegerType(), True),
         StructField("aqi_category", StringType(), True),
-        StructField("co_aqi_value",  StringType(), True),
+        StructField("co_aqi_value",  IntegerType(), True),
         StructField("co_aqi_category", StringType(), True),
-        StructField("ozone_aqi_value", StringType(), True),
+        StructField("ozone_aqi_value", IntegerType(), True),
         StructField("ozone_aqi_category", StringType(), True),
-        StructField("no2_aqi_value", StringType(), True),
+        StructField("no2_aqi_value", IntegerType(), True),
         StructField("no2_aqi_category", StringType(), True),
-        StructField("pm25_aqi_value", StringType(), True),
+        StructField("pm25_aqi_value", IntegerType(), True),
         StructField("pm25_aqi_category", StringType(), True),
     ])
 
