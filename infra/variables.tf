@@ -1,3 +1,19 @@
+## Variables that will prompt user to answer during terraform program's execution
+
+variable "kaggle_username" {
+  description = "Kaggle username"
+  type        = string
+  sensitive   = true
+}
+
+variable "kaggle_key" {
+  description = "Kaggle API key"
+  type        = string
+  sensitive   = true
+}
+
+## Variables that prompt user to answer during terraform program's execution (as answered in terraform.tfvars file)
+
 variable "project_id" {
   description = "The GCP project ID."
   type        = string

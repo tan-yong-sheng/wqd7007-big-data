@@ -4,14 +4,31 @@ Terraform is an infrastructure-as-code (IaC) tool that enables automated provisi
 
 > Please refer to the [documentation](./README.md) to understand which big data infrastructure components are automatically provisioned via Terraform.
 
-## Deployment Steps
 
-1. **Validate Configuration**
 
-Navigate to the infrastructure directory and validate your Terraform configuration to ensure there are no syntax errors:
+1. Configure Terraform Variables
 
-```
+Navigate to the infrastructure directory:
+
+```bash
 cd infra
+```
+
+Rename the example configuration file to create your active configuration:
+
+```bash
+cp terraform.tfvars.example terraform.tfvars
+```
+
+Edit the `terraform.tfvars` file and fill in your Kaggle credentials. You can obtain these credentials by downloading the `kaggle.json` API key file from your Kaggle account settings page:  [https://www.kaggle.com/settings](https://www.kaggle.com/settings).
+
+Extract the username and key values from your `kaggle.json` file and add them to the `kaggle_username` and `kaggle_key` variables in `terraform.tfvars`.
+
+2. **Validate Configuration**
+
+Validate your Terraform configuration to ensure there are no syntax errors:
+
+```bash
 terraform validate
 ```
 
@@ -22,7 +39,7 @@ terraform validate
 
 Generate an execution plan to preview the infrastructure changes Terraform will make. This allows you to review all resources that will be created, modified, or destroyed:
 
-```
+```bash
 terraform plan
 ```
 
@@ -34,7 +51,7 @@ terraform plan
 
 Apply the changes to deploy your big data infrastructure. Terraform will prompt for confirmation before making any changes to your cloud resources:
 
-```
+```bash
 terraform apply
 ```
 

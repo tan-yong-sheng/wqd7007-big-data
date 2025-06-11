@@ -1,5 +1,7 @@
 ## Terraform for Automated Provisioning of Big Data Infrastructure on GCP
 
+> Note: please read the intro guide first [here](./README.md) before looking into this terraform's resource configuration setup,
+
 Using Terraform, we could automatically provisions a comprehensive data lakehouse environment on Google Cloud Platform with several key resource layers that align with modern data architecture patterns.
 
 
