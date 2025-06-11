@@ -128,14 +128,17 @@ with DAG("SparkETL-v2", schedule_interval="@weekly", default_args=default_args) 
     )
     list_batches = DataprocListBatchesOperator(
         task_id="list-all-batches",
+        region=REGION
     )
     get_batch = DataprocGetBatchOperator(
         task_id="get_batch",
         batch_id="batch-create-dataproc",
+        region=REGION
     )
     delete_batch = DataprocDeleteBatchOperator(
         task_id="delete_batch",
         batch_id="batch-create-dataproc",
+        region=REGION
     )
 
 
