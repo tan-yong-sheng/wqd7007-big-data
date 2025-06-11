@@ -97,7 +97,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
             {"name": "pm25_aqi_category", "type": "STRING", "mode": "NULLABLE"},
             {"name": "dominant_pollutant", "type": "STRING", "mode": "NULLABLE"}
         ],
-        create_disposition='CREATE_IF_NEEDED'
+        exists_ok=True  # or False depending on your needs
     )
 
     # Submit PySpark job to Dataproc
@@ -129,7 +129,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
             {"name": "pm25_aqi_category", "type": "STRING", "mode": "NULLABLE"},
             {"name": "dominant_pollutant", "type": "STRING", "mode": "NULLABLE"}
         ],
-        create_disposition='CREATE_IF_NEEDED'
+        exists_ok=True  # or False depending on your needs
     )
 
     # Task to write data to BigQuery
