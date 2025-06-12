@@ -2,7 +2,7 @@
 
 Terraform is an infrastructure-as-code (IaC) tool that enables automated provisioning and management of cloud resources. This guide walks you through deploying a complete big data infrastructure stack to Google Cloud Platform.
 
-> Please refer to the [Terraform Resource Configuration documentation](/setup_docs/big_data_project/deployment_via_terraform/README.md) to understand which big data infrastructure components are automatically provisioned via Terraform.
+> Please refer to the [Terraform Resource Configuration documentation](terraform-gcp-data-lakehouse-infrastructure.md) to understand which big data infrastructure components are automatically provisioned via Terraform.
 
 1. Authenticate with Google Cloud
 
