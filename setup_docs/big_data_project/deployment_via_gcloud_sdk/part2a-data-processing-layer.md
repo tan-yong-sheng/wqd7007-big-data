@@ -92,6 +92,10 @@ Grant storage admin permissions to the service account:
 ```bash
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \
     --member=serviceAccount:${SERVICE_ACCOUNT_EMAIL} \
+    --role="roles/dataproc.editor"
+
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+    --member=serviceAccount:${SERVICE_ACCOUNT_EMAIL} \
     --role="roles/storage.admin"
 ```
 
