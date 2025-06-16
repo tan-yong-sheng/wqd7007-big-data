@@ -39,7 +39,8 @@ Enable the necessary Google Cloud APIs:
 gcloud services enable \
   storage.googleapis.com \
   bigquery.googleapis.com \
-  dataproc.googleapis.com
+  dataproc.googleapis.com \
+  cloudresourcemanager.googleapis.com
 ```
 
 Step 3: Configure Network Settings
@@ -94,6 +95,8 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
     --role="roles/storage.admin"
 ```
 
+
+
 Step 6: Create Dataproc Cluster
 ----------------------------------
 
@@ -129,7 +132,6 @@ gcloud dataproc clusters create "${DATAPROC_CLUSTER_NAME}" \
     --temp-bucket="${TEMP_BUCKET_NAME}" \
     --labels="environment=dev,created_by=gcloud-script,purpose=etl-pipeline" \
     --max-idle="30m" \
-    --enable-component-gateway \
     --no-address
 ```
 
