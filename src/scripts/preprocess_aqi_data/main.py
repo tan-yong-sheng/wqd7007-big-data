@@ -40,7 +40,7 @@ def preprocess_aqi_data(spark, gcs_path):
     df = spark.read.option("header", "true").schema(schema).csv(gcs_path)
     print(f"Read data from GCS: {gcs_path}")
 
-    # De-duplicate the data based on all rows
+    # De-duplicate the data based on all columns
     df = df.distinct()
     print("De-duplicated the dataset based on all columns.")
 

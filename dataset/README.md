@@ -35,3 +35,5 @@ We will perform a few data processing via pyspark in Dataproc as follows:
 - Remove duplicated rows
 - Remove rows with missing values for 'Country' and 'City' columns'
 - Create a new column named dominant_pollutant, which contains the name of the pollutant (e.g., PM2.5, PM10, NO2, etc.) that has the highest AQI value in each row.
+
+To learn more about this dataset, please visit the summary statistics section [here](./summary_statistics.md)
