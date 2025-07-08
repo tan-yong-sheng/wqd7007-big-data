@@ -32,7 +32,7 @@ cp terraform.tfvars.example terraform.tfvars
 
 Edit the `terraform.tfvars` file and fill in your Kaggle credentials. You can obtain these credentials by downloading the `kaggle.json` API key file from your Kaggle account settings page:  [https://www.kaggle.com/settings](https://www.kaggle.com/settings).
 
-Extract the username and key values from your `kaggle.json` file and add them to the `kaggle_username` and `kaggle_key` variables in `terraform.tfvars`.
+Extract the username and key values from your `kaggle.json` file and add them to the `kaggle_username` and `kaggle_key` variables in `terraform.tfvars`. Also, remember to change the project_id as well.
 
 
 ![](/images/terraform-setup-variable.png)
