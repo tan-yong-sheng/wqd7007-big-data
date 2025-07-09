@@ -7,19 +7,33 @@ on:
     paths:
       - 'src/**'
       - 'dags/**'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'dags/**'
+
+# Set permissions at workflow level
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   sync:
     name: Sync src/ and dags/ to GCS
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      id-token: write  # Required for workload identity federation
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Debug OIDC Token Environment
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "ACTIONS_ID_TOKEN_REQUEST_TOKEN set: ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN != '' }}"
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL set: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL != '' }}"
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
