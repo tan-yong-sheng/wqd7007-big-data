@@ -13,6 +13,10 @@ jobs:
     name: Sync src/ and dags/ to GCS
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      id-token: write  # Required for workload identity federation
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
