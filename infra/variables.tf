@@ -57,12 +57,6 @@ variable "github_repo" {
   }
 }
 
-variable "cloud_build_filename" {
-  description = "Location of the cloudbuild.yaml file (relative to project folder)"
-  type        = string
-  default     = "cloudbuild.yaml"
-}
-
 variable "composer_env_name" {
   description = "The name of the Cloud Composer environment."
   type        = string

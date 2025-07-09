@@ -32,7 +32,7 @@ resource "google_secret_manager_secret" "kaggle_credentials" {
 
   depends_on = [
     google_project_service.secretmanager_api,
-    google_project_service.cloudresourcemanager_api,
+    google_project_service.cloudresourcemanager_api
   ]
 }
 
@@ -42,6 +42,8 @@ resource "google_secret_manager_secret_version" "kaggle_credentials_version" {
   secret_data = local.kaggle_json
 
   depends_on = [
-    google_secret_manager_secret.kaggle_credentials
+    google_secret_manager_secret.kaggle_credentials,
+    google_project_service.secretmanager_api,
+    google_project_service.cloudresourcemanager_api
   ]
 }

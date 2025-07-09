@@ -25,34 +25,20 @@ resource "google_project_service" "cloud_functions_api" {
 }
 
 
-# 3. Grant the Compute Engine default service account (used by the trigger) the Cloud Run Admin role
-# This is needed because the trigger is now configured to run as this service account.
-
-resource "google_project_iam_member" "compute_sa_run_admin" {
-  project = var.project_id
-  role    = "roles/run.admin"
-  member  = "serviceAccount:${data.google_project.current_project.number}-compute@developer.gserviceaccount.com"
-  depends_on = [
-    google_project_service.cloud_run_api, # Ensure Cloud Run API is enabled
-    data.google_project.current_project
-  ]
-}
-
-
-# Use the default Compute Engine service account
+# 3. Use the default Compute Engine service account
 data "google_service_account" "existing_function_sa" {
   account_id = "${data.google_project.current_project.number}-compute@developer.gserviceaccount.com"
   project    = var.project_id
 }
 
-# Create a ZIP file of your function source code
+# 4a. Create a ZIP file of your function source code
 data "archive_file" "function_source" {
   type        = "zip"
   source_dir  = "${path.module}/../src/scripts/download_kaggle_data"
   output_path = "${path.module}/../tmp/download_kaggle_data.zip"
 }
 
-# Upload the function source ZIP to Google Cloud Storage
+# 4b. Upload the function source ZIP to Google Cloud Storage
 resource "google_storage_bucket_object" "function_source" {
   name   = "function-source-${data.archive_file.function_source.output_md5}.zip"
   bucket = var.bucket
@@ -62,7 +48,7 @@ resource "google_storage_bucket_object" "function_source" {
 }
 
 
-# 4. Create the Cloud Function (Gen2)
+# 5. Create the Cloud Function (Gen2)
 resource "google_cloudfunctions2_function" "download_kaggle_data" {
   name        = "download_kaggle_data"
   location    = var.region
@@ -114,11 +100,10 @@ resource "google_cloudfunctions2_function" "download_kaggle_data" {
   ]
 }
 
-# Grant necessary permissions to the existing service account
+# 6. Grant necessary permissions to the existing service account
 resource "google_project_iam_member" "function_sa_permissions" {
   for_each = toset([
     "roles/storage.objectAdmin",
-    "roles/secretmanager.secretAccessor",
     "roles/logging.logWriter",
     "roles/monitoring.metricWriter",
   ])
@@ -129,10 +114,9 @@ resource "google_project_iam_member" "function_sa_permissions" {
   depends_on = [
     data.google_project.current_project
   ]
-
 }
 
-# Make the function publicly accessible (equivalent to --allow-unauthenticated)
+# 7. Make the function publicly accessible (equivalent to --allow-unauthenticated)
 resource "google_cloudfunctions2_function_iam_member" "public_access" {
   project        = var.project_id
   location       = var.region
