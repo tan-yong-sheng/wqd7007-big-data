@@ -64,6 +64,13 @@ def invoke_cloud_function_with_auth(region: str, project_id: str, function_name:
     """
     Invoke a Cloud Function with proper authentication using identity tokens.
     """
+    # Import all required modules at the beginning of the function
+    from google.auth.transport.requests import Request
+    from google.oauth2 import service_account
+    from google.auth import jwt
+    import google.auth.compute_engine
+    import requests as std_requests
+    
     # Use the actual Cloud Run URL from terraform output
     FUNCTION_URL = "https://download-kaggle-data-rimwezr5ma-uc.a.run.app"
     
@@ -71,19 +78,10 @@ def invoke_cloud_function_with_auth(region: str, project_id: str, function_name:
         # Get default credentials (Composer service account)
         credentials, _ = google.auth.default()
         
-        # For Cloud Run services, we need identity tokens, not access tokens
-        # Import the identity token functionality
-        from google.auth.transport.requests import Request
-        from google.oauth2 import service_account
-        from google.auth import jwt
-        import google.auth.compute_engine
-        
         # Check if we're using compute engine credentials (which is the case in Composer)
         if isinstance(credentials, google.auth.compute_engine.Credentials):
             # For compute engine, we need to get an identity token with the service URL as audience
             # Use the metadata server to get an identity token
-            import requests as std_requests
-            
             metadata_server_url = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity"
             headers = {"Metadata-Flavor": "Google"}
             params = {"audience": FUNCTION_URL, "format": "full"}
