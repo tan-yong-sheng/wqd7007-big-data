@@ -8,7 +8,7 @@ We would like to invite you to explore our documentation guide, which outlines t
 
 Basically there are 2 ways for the deployment of this Big Data Infrastructure, and you just need to choose either of them:
 
-(a) Manually executing the gcloud sdk on Google Cloud Shell to deploy each services one by one:
+(a) Manually executing gcloud sdk on Google Cloud Shell to deploy each services one by one:
 
 - [Part 1 - Data Ingestion Layer with Cloud Function](/setup_docs/big_data_project/deployment_via_gcloud_sdk/part1-data-ingestion-layer.md)
 - [Part 2a - Data Processing Layer with Dataproc](/setup_docs/big_data_project/deployment_via_gcloud_sdk/part2a-data-processing-layer.md)
