@@ -12,6 +12,11 @@ variable "kaggle_key" {
   sensitive   = true
 }
 
+variable "secret_id" {
+  description = "The name of the Kaggle secrets stored in Google Secret Manager"
+  type        = string
+}
+
 ## Variables that prompt user to answer during terraform program's execution (as answered in terraform.tfvars file)
 
 variable "project_id" {
@@ -32,6 +37,30 @@ variable "location" {
 variable "zone" {
   description = "The GCP zone for the Dataproc cluster."
   type        = string
+}
+
+variable "github_username" {
+  description = "Your GitHub username"
+  type        = string
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$", var.github_username))
+    error_message = "GitHub username must be valid."
+  }
+}
+
+variable "github_repo" {
+  description = "Your GitHub repository name"
+  type        = string
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9._-]+$", var.github_repo))
+    error_message = "GitHub repository name must be valid."
+  }
+}
+
+variable "cloud_build_filename" {
+  description = "Location of the cloudbuild.yaml file (relative to project folder)"
+  type        = string
+  default     = "cloudbuild.yaml"
 }
 
 variable "composer_env_name" {

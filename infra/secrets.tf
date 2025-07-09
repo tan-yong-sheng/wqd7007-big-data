@@ -24,7 +24,7 @@ resource "google_project_iam_member" "secret_accessor" {
 
 # 4. Create Kaggle secrets in google secret manager
 resource "google_secret_manager_secret" "kaggle_credentials" {
-  secret_id = "kaggle-json"
+  secret_id = var.secret_id
   
   replication {
     auto {}
@@ -34,8 +34,14 @@ resource "google_secret_manager_secret" "kaggle_credentials" {
     google_project_service.secretmanager_api,
     google_project_service.cloudresourcemanager_api,
   ]
+}
 
-  timeouts {
-    create = "10m"
-  }
+# 5. Create the secret version with the Kaggle credentials data
+resource "google_secret_manager_secret_version" "kaggle_credentials_version" {
+  secret      = google_secret_manager_secret.kaggle_credentials.id
+  secret_data = local.kaggle_json
+
+  depends_on = [
+    google_secret_manager_secret.kaggle_credentials
+  ]
 }
