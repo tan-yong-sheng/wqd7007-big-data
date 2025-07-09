@@ -4,6 +4,12 @@ Terraform is an infrastructure-as-code (IaC) tool that enables automated provisi
 
 > After reading this guide, please refer to the [Terraform Resource Configuration documentation](terraform-gcp-data-lakehouse-infrastructure.md) to understand which big data infrastructure components are automatically provisioned via Terraform.
 
+### 0. Git clone this repo
+
+```bash
+git clone https://github.com/tan-yong-sheng/wqd7007-big-data.git
+```
+
 ### 1. Authenticate with Google Cloud
 
 Run the following commands to authenticate:
@@ -125,3 +131,13 @@ When you first run this Terraform script, you may encounter an error creating th
 - Future triggers for the same repository can be created through Terraform without manual intervention
 
 **Note:** This is a one-time setup per GitHub account. Once connected, you can create multiple triggers for different repositories using Terraform.
+
+### 3. Github Secrets setup
+
+Also, you will need to setup github actions: [.github\workflows\sync-gcs-dags-bucket.yaml](../../../.github\workflows\sync-gcs-dags-bucket.yaml) to sync the files between the local files and files on cloud (e.g., DAGS_BUCKET)
+
+Navigate to your project settings, and create 3 new secrets variable there as shown in the diagram below:
+![](/images/github-secrets.png)
+
+You could check what are the 3 secret variables to be set via typing `terraform output` in the terminal:
+![](/images/github-secrets-check.png)
