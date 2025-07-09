@@ -1,3 +1,5 @@
+note.txt
+
 .env
 *.tfstate
 *.tfstate.backup

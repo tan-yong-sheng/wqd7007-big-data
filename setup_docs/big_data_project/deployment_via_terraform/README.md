@@ -37,6 +37,13 @@ Extract the username and key values from your `kaggle.json` file and add them to
 
 ![](/images/terraform-setup-variable.png)
 
+
+3. **Initialize terraform environment**
+
+```bash
+terraform init
+```
+
 3. **Validate Configuration**
 
 Validate your Terraform configuration to ensure there are no syntax errors:
@@ -74,4 +81,19 @@ terraform apply
 ![](/images/terraform-apply2.png)
 
 The deployment process will show real-time progress as Terraform creates your infrastructure resources. Once completed, you'll see a summary of the resources that were successfully created.
+
+
+---
+
+## Additional Note
+
+The first time you execute this script, you will likely encounter this error. This occurs because we're attempting to create a Google Cloud subnetwork named "default" that already exists in your project. However, our goal is not to create a new subnetwork, but rather to modify the existing default subnetwork to enable `private_ip_google_access = true`.
+
+To resolve this issue, we need to import the existing subnetwork into Terraform's state so that Terraform can manage and modify it:
+
+```bash
+terraform import google_compute_subnetwork.default_subnet_private_access_update "projects/$(terraform output -raw project_id)/regions/$(terraform output -raw region)/subnetworks/default"
+```
+
+![](/images/terraform-subnetwork-creation-error.png)
 
