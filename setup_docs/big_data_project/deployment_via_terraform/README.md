@@ -107,32 +107,7 @@ terraform import google_compute_subnetwork.default_subnet_private_access_update 
 
 ![](/images/terraform-subnetwork-creation-error.png)
 
-### 2. Error Creating Cloud Build Trigger
-
-When you first run this Terraform script, you may encounter an error creating the Cloud Build trigger. This occurs because Google Cloud Build requires a one-time manual setup to establish the connection between your GitHub account and Google Cloud Platform.
-
-![](/images/terraform-cloudbuild-trigger-creation-error.png)
-
-**Why this happens:** Terraform cannot create triggers for GitHub repositories that haven't been connected to Cloud Build yet. The GitHub repository connection must be established manually before Terraform can manage triggers.
-
-**Solution:** Connect your GitHub repository to Cloud Build manually (one-time setup):
-
-1. **Open Google Cloud Console** and navigate to **Cloud Build → Triggers**
-2. **Click "Connect Repository"**
-3. **Select "GitHub (Cloud Build GitHub App)"**
-4. **Authenticate with GitHub** and authorize Google Cloud Build to access your repositories
-5. **Select your specific repository** from the list
-
-![](/images/terraform-cloudbuild-connect-github-repo.png)
-
-**After completing this setup:**
-- The GitHub repository will be connected to Cloud Build
-- You can re-run `terraform apply` and the trigger creation will succeed
-- Future triggers for the same repository can be created through Terraform without manual intervention
-
-**Note:** This is a one-time setup per GitHub account. Once connected, you can create multiple triggers for different repositories using Terraform.
-
-### 3. Github Secrets setup
+### 2. Github Secrets setup
 
 Also, you will need to setup github actions: [.github\workflows\sync-gcs-dags-bucket.yaml](../../../.github\workflows\sync-gcs-dags-bucket.yaml) to sync the files between the local files and files on cloud (e.g., DAGS_BUCKET)
 
