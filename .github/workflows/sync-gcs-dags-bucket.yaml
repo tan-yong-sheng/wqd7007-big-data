@@ -11,6 +11,7 @@ on:
     paths:
       - 'src/**'
       - 'dags/**'
+  workflow_dispatch:
 
 # Set permissions at workflow level
 permissions:
