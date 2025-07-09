@@ -14,12 +14,18 @@ resource "google_project_service" "cloud_build_api" {
   disable_on_destroy = false
 }
 
-## 2. Ensure Cloud Run API is enabled (as a dependency for the below)
+## 2. Ensure Cloud Run and Cloud Functions API is enabled (as a dependency for the below)
 
-resource "google_project_service" "run_api" {
+resource "google_project_service" "cloud_run_api" {
   project            = var.project_id
   service            = "run.googleapis.com"
   disable_on_destroy = false
+}
+
+resource "google_project_service" "cloud_functions_api" {
+  project = var.project_id
+  service = "cloudfunctions.googleapis.com"
+  disable_on_destroy = false # Set to true to disable API on 'terraform destroy'
 }
 
 # 3. Grant the Cloud Build service account permission to act as the Cloud Function's runtime service account
@@ -44,7 +50,7 @@ resource "google_project_iam_member" "compute_sa_run_admin" {
   role    = "roles/run.admin"
   member  = "serviceAccount:${data.google_project.current_project.number}-compute@developer.gserviceaccount.com"
   depends_on = [
-    google_project_service.run_api, # Ensure Cloud Run API is enabled
+    google_project_service.cloud_run_api, # Ensure Cloud Run API is enabled
     data.google_project.current_project
   ]
 }

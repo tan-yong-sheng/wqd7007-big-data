@@ -10,6 +10,7 @@
     # and subnets with Private Google Access enabled from the outset, rather than
     # modifying the default network.
 
+
 resource "google_compute_subnetwork" "default_subnet_private_access_update" {
   # Referencing the default subnet by its name and region
   name    = "default"
