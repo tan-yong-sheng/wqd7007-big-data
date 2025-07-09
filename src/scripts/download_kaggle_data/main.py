@@ -14,7 +14,7 @@ def get_secret(secret_name):
     return response.payload.data.decode("UTF-8")
 
 @functions_framework.http
-def download_kaggle_data(request):
+def main(request):
     try:
         # Validate environment variables
         bucket_name = os.getenv('BUCKET')

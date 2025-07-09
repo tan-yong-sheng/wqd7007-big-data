@@ -4,7 +4,7 @@ Terraform is an infrastructure-as-code (IaC) tool that enables automated provisi
 
 > After reading this guide, please refer to the [Terraform Resource Configuration documentation](terraform-gcp-data-lakehouse-infrastructure.md) to understand which big data infrastructure components are automatically provisioned via Terraform.
 
-1. Authenticate with Google Cloud
+### 1. Authenticate with Google Cloud
 
 Run the following commands to authenticate:
 
@@ -16,7 +16,7 @@ gcloud auth default-application login
 - `gcloud auth login`: Authenticates your user account for use with the Google Cloud CLI.
 - `gcloud auth application-default login`: Sets up credentials for Application Default Credentials (used by Terraform and client libraries).
 
-2. Configure Terraform Variables
+### 2. Configure Terraform Variables
 
 Navigate to the infrastructure directory:
 
@@ -37,7 +37,14 @@ Extract the username and key values from your `kaggle.json` file and add them to
 
 ![](/images/terraform-setup-variable.png)
 
-3. **Validate Configuration**
+
+### 3. **Initialize terraform environment**
+
+```bash
+terraform init
+```
+
+### 4. **Validate Configuration**
 
 Validate your Terraform configuration to ensure there are no syntax errors:
 
@@ -48,7 +55,7 @@ terraform validate
 ![](/images/terraform-validate.png)
 
 
-4. **Preview Changes**
+### 5. **Preview Changes**
 
 Generate an execution plan to preview the infrastructure changes Terraform will make. This allows you to review all resources that will be created, modified, or destroyed:
 
@@ -60,7 +67,7 @@ terraform plan
 
 ![](/images/terraform-plan2.png)
 
-5. **Deploy Infrastructure**
+### 6. **Deploy Infrastructure**
 
 Apply the changes to deploy your big data infrastructure. Terraform will prompt for confirmation before making any changes to your cloud resources:
 
@@ -75,3 +82,46 @@ terraform apply
 
 The deployment process will show real-time progress as Terraform creates your infrastructure resources. Once completed, you'll see a summary of the resources that were successfully created.
 
+
+---
+
+## Additional Note for First Time Setup
+
+The first time you execute this script, you will likely encounter this error.
+
+### 1. Subnetwork Already Exists Error
+
+This occurs because we're attempting to create a Google Cloud subnetwork named "default" that already exists in your project. However, our goal is not to create a new subnetwork, but rather to modify the existing default subnetwork to enable `private_ip_google_access = true`.
+
+To resolve this issue, we need to import the existing subnetwork into Terraform's state so that Terraform can manage and modify it:
+
+```bash
+terraform import google_compute_subnetwork.default_subnet_private_access_update "projects/$(terraform output -raw project_id)/regions/$(terraform output -raw region)/subnetworks/default"
+```
+
+![](/images/terraform-subnetwork-creation-error.png)
+
+### 2. Error Creating Cloud Build Trigger
+
+When you first run this Terraform script, you may encounter an error creating the Cloud Build trigger. This occurs because Google Cloud Build requires a one-time manual setup to establish the connection between your GitHub account and Google Cloud Platform.
+
+![](/images/terraform-cloudbuild-trigger-creation-error.png)
+
+**Why this happens:** Terraform cannot create triggers for GitHub repositories that haven't been connected to Cloud Build yet. The GitHub repository connection must be established manually before Terraform can manage triggers.
+
+**Solution:** Connect your GitHub repository to Cloud Build manually (one-time setup):
+
+1. **Open Google Cloud Console** and navigate to **Cloud Build → Triggers**
+2. **Click "Connect Repository"**
+3. **Select "GitHub (Cloud Build GitHub App)"**
+4. **Authenticate with GitHub** and authorize Google Cloud Build to access your repositories
+5. **Select your specific repository** from the list
+
+![](/images/terraform-cloudbuild-connect-github-repo.png)
+
+**After completing this setup:**
+- The GitHub repository will be connected to Cloud Build
+- You can re-run `terraform apply` and the trigger creation will succeed
+- Future triggers for the same repository can be created through Terraform without manual intervention
+
+**Note:** This is a one-time setup per GitHub account. Once connected, you can create multiple triggers for different repositories using Terraform.

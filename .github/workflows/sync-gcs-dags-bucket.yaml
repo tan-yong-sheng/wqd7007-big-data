@@ -1,0 +1,35 @@
+name: Sync to GCS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'dags/**'
+
+jobs:
+  sync:
+    name: Sync src/ and dags/ to GCS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SA_EMAIL }}
+
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Sync src/ to GCS
+        run: |
+          gsutil -m rsync -d -r src gs://${{ secrets.DAGS_BUCKET }}/src
+
+      - name: Sync dags/ to GCS
+        run: |
+          gsutil -m rsync -d -r dags gs://${{ secrets.DAGS_BUCKET }}/dags
