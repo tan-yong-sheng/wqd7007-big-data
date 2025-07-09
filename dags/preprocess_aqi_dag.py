@@ -64,8 +64,8 @@ def invoke_cloud_function_with_auth(region: str, project_id: str, function_name:
     """
     Invoke a Cloud Function with proper authentication.
     """
-    # Use the actual Cloud Run URL from your Cloud Function
-    FUNCTION_URL = f"https://{function_name}-rimwezr5ma-uc.a.run.app"
+    # Use the actual Cloud Run URL from terraform output
+    FUNCTION_URL = "https://download-kaggle-data-rimwezr5ma-uc.a.run.app"
     
     try:
         # Get default credentials (Composer service account)
