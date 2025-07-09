@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobOperator
-from airflow.providers.google.cloud.operators.bigquery import (BigQueryCreateEmptyTableOperator, 
+from airflow.providers.google.cloud.operators.bigquery import (BigQueryCreateTableOperator, 
                                                                BigQueryInsertJobOperator)
 
 # Google Cloud authentication imports
@@ -135,7 +135,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
     )
 
     # Create staging_table in BigQuery if not exists
-    create_staging_table = BigQueryCreateEmptyTableOperator(
+    create_staging_table = BigQueryCreateTableOperator(
         task_id="create_staging_table",
         dataset_id="staging",
         table_id="air_pollution_data",
@@ -154,7 +154,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
             {"name": "pm25_aqi_category", "type": "STRING", "mode": "NULLABLE"},
             {"name": "dominant_pollutant", "type": "STRING", "mode": "NULLABLE"}
         ],
-        exists_ok=True  # or False depending on your needs
+        exists_ok=True  # Modern equivalent of the old behavior
     )
 
     # Submit PySpark job to Dataproc
@@ -167,7 +167,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
     )
 
     # Create fact_table in BigQuery if not exists
-    create_fact_table = BigQueryCreateEmptyTableOperator(
+    create_fact_table = BigQueryCreateTableOperator(
         task_id="create_fact_table",
         dataset_id="fact",
         table_id="air_pollution_data",
