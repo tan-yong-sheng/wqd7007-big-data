@@ -234,6 +234,7 @@ After waiting for around 30s - 1 min, our script will be deployed to the Cloud F
 
 Step 7: Test the Cloud Function
 -------------------------------
+Type the following command in your cloud shell terminal:
 
 ```bash
 > curl "https://${REGION}-${PROJECT_ID}.cloudfunctions.net/download_and_upload?bucket-name=${BUCKET}" \
