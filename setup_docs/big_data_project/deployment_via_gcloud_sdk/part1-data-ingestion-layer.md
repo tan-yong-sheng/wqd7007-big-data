@@ -218,7 +218,6 @@ gcloud functions deploy download_kaggle_data \
   --gen2 \
   --runtime python310 \
   --trigger-http \
-  --allow-unauthenticated \
   --region ${REGION} \
   --source ./src/scripts/download_kaggle_data \
   --set-env-vars PROJECT_ID=${PROJECT_ID},BUCKET=${BUCKET} \
@@ -237,7 +236,12 @@ Step 7: Test the Cloud Function
 -------------------------------
 
 ```bash
-> curl "https://${REGION}-${PROJECT_ID}.cloudfunctions.net/download_and_upload?bucket-name=${BUCKET}"
+> curl "https://${REGION}-${PROJECT_ID}.cloudfunctions.net/download_and_upload?bucket-name=${BUCKET}" \
+-H "Authorization: bearer $(gcloud auth print-identity-token)" \
+-H "Content-Type: application/json" \
+-d '{
+  "name": "Developer"
+}'
 ```
 
 If you open the link directly in your browser, you will see this output:
