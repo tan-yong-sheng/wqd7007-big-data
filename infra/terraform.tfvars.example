@@ -1,9 +1,14 @@
 # --- Kaggle credentials ---
 kaggle_username = 
 kaggle_key      = 
+secret_id       = "kaggle-json"
+
+# --- Cloud Build Configuration ---
+github_username = "tan-yong-sheng"
+github_repo = "wqd7007-big-data"
 
 # --- GCP Project and Location ---
-project_id = "gp-461213"
+project_id = "wqd7007-big-data"
 region     = "us-central1"
 zone       = "us-central1-f"
 location   = "US"
