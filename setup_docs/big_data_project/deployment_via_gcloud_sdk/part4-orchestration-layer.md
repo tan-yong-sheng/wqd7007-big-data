@@ -94,6 +94,12 @@ from airflow.providers.google.cloud.operators.dataproc import DataprocSubmitJobO
 from airflow.providers.google.cloud.operators.bigquery import (BigQueryCreateEmptyTableOperator, 
                                                                BigQueryInsertJobOperator)
 
+# Google Cloud authentication imports
+from google.auth.transport.requests import Request
+from google.oauth2 import service_account
+import google.auth
+from google.auth import impersonated_credentials
+
 # Project Configuration
 PROJECT_ID = os.environ.get('MY_PROJECT_ID')
 GOOGLE_CONN_ID = os.environ.get('GOOGLE_CONN_ID')
@@ -141,12 +147,61 @@ default_args = {
 
 
 def invoke_cloud_function_with_auth(region: str, project_id: str, function_name: str):
-    FUNCTION_URL = f"https://{region}-{project_id}.cloudfunctions.net/{function_name}"
-    # calling cloud function
-    headers = {"Content-Type": "application/json"}
-    response = requests.post(FUNCTION_URL, headers=headers)
-    response.raise_for_status()
-    return response.json()
+    """
+    Invoke a Cloud Function with proper authentication using identity tokens.
+    """
+    # Import all required modules at the beginning of the function
+    from google.auth.transport.requests import Request
+    from google.oauth2 import service_account
+    from google.auth import jwt
+    import google.auth.compute_engine
+    import requests as std_requests
+    
+    # Use the actual Cloud Run URL from terraform output
+    FUNCTION_URL = "https://download-kaggle-data-rimwezr5ma-uc.a.run.app"
+    
+    try:
+        # Get default credentials (Composer service account)
+        credentials, _ = google.auth.default()
+        
+        # Check if we're using compute engine credentials (which is the case in Composer)
+        if isinstance(credentials, google.auth.compute_engine.Credentials):
+            # For compute engine, we need to get an identity token with the service URL as audience
+            # Use the metadata server to get an identity token
+            metadata_server_url = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity"
+            headers = {"Metadata-Flavor": "Google"}
+            params = {"audience": FUNCTION_URL, "format": "full"}
+            
+            print(f"Getting identity token for audience: {FUNCTION_URL}")
+            token_response = std_requests.get(metadata_server_url, headers=headers, params=params)
+            token_response.raise_for_status()
+            identity_token = token_response.text
+            
+            print(f"Successfully obtained identity token")
+            
+        else:
+            # Fallback for other credential types
+            auth_request = Request()
+            credentials.refresh(auth_request)
+            identity_token = credentials.token
+        
+        # Make authenticated request with identity token
+        headers = {
+            "Authorization": f"Bearer {identity_token}",
+            "Content-Type": "application/json"
+        }
+        
+        print(f"Calling Cloud Function: {FUNCTION_URL}")
+        response = requests.post(FUNCTION_URL, headers=headers, json={})
+        response.raise_for_status()
+        
+        result = response.json()
+        print(f"Success: {result}")
+        return result
+        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        raise
 
 
 # DAG definition
@@ -183,7 +238,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
             {"name": "pm25_aqi_category", "type": "STRING", "mode": "NULLABLE"},
             {"name": "dominant_pollutant", "type": "STRING", "mode": "NULLABLE"}
         ],
-        exists_ok=True  # or False depending on your needs
+        exists_ok=True
     )
 
     # Submit PySpark job to Dataproc
@@ -215,7 +270,7 @@ with DAG("SparkETL", schedule_interval="@weekly", default_args=default_args) as 
             {"name": "pm25_aqi_category", "type": "STRING", "mode": "NULLABLE"},
             {"name": "dominant_pollutant", "type": "STRING", "mode": "NULLABLE"}
         ],
-        exists_ok=True  # or False depending on your needs
+        exists_ok=True
     )
 
     # Task to write data to BigQuery
