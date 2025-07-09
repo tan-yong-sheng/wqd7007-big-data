@@ -62,7 +62,7 @@ default_args = {
 
 def invoke_cloud_function_with_auth(region: str, project_id: str, function_name: str):
     """
-    Invoke a Cloud Function with proper authentication.
+    Invoke a Cloud Function with proper authentication using identity tokens.
     """
     # Use the actual Cloud Run URL from terraform output
     FUNCTION_URL = "https://download-kaggle-data-rimwezr5ma-uc.a.run.app"
@@ -71,13 +71,39 @@ def invoke_cloud_function_with_auth(region: str, project_id: str, function_name:
         # Get default credentials (Composer service account)
         credentials, _ = google.auth.default()
         
-        # Refresh to get a valid token
-        auth_request = Request()
-        credentials.refresh(auth_request)
+        # For Cloud Run services, we need identity tokens, not access tokens
+        # Import the identity token functionality
+        from google.auth.transport.requests import Request
+        from google.oauth2 import service_account
+        from google.auth import jwt
+        import google.auth.compute_engine
         
-        # Make authenticated request
+        # Check if we're using compute engine credentials (which is the case in Composer)
+        if isinstance(credentials, google.auth.compute_engine.Credentials):
+            # For compute engine, we need to get an identity token with the service URL as audience
+            # Use the metadata server to get an identity token
+            import requests as std_requests
+            
+            metadata_server_url = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity"
+            headers = {"Metadata-Flavor": "Google"}
+            params = {"audience": FUNCTION_URL, "format": "full"}
+            
+            print(f"Getting identity token for audience: {FUNCTION_URL}")
+            token_response = std_requests.get(metadata_server_url, headers=headers, params=params)
+            token_response.raise_for_status()
+            identity_token = token_response.text
+            
+            print(f"Successfully obtained identity token")
+            
+        else:
+            # Fallback for other credential types
+            auth_request = Request()
+            credentials.refresh(auth_request)
+            identity_token = credentials.token
+        
+        # Make authenticated request with identity token
         headers = {
-            "Authorization": f"Bearer {credentials.token}",
+            "Authorization": f"Bearer {identity_token}",
             "Content-Type": "application/json"
         }
         
