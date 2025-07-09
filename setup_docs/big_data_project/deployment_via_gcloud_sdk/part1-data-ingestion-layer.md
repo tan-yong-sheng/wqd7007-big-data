@@ -243,11 +243,6 @@ Step 7: Test the Cloud Function
   "name": "Developer"
 }'
 ```
-
-If you open the link directly in your browser, you will see this output:
-
-![](/images/cloud-function-deployed.png)
-
 And when you check your Google Cloud Storage, you will see the data will be downloaded:
 
 ![](/images/cloud-function-to-download-data-to-bucket.png)
